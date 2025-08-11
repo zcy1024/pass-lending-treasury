@@ -5,10 +5,12 @@ import { Dispatch } from "react";
 import { randomTwentyFive } from "@/lib/utils";
 
 type initialStateType = {
+    navTab: string,
     progressValue: number
 }
 
 const initialState: initialStateType = {
+    navTab: "Supply",
     progressValue: 0
 }
 
@@ -16,6 +18,9 @@ const infoStore = createSlice({
     name: "info",
     initialState,
     reducers: {
+        setNavTab(state, action: { payload: string }) {
+            state.navTab = action.payload;
+        },
         setProgressValue(state, action: { payload: number }) {
             state.progressValue = action.payload;
         }
@@ -38,10 +43,12 @@ const initProgress = () => {
 }
 
 const {
+    setNavTab,
     setProgressValue
 } = infoStore.actions;
 
 export {
+    setNavTab,
     setProgressValue
 };
 
