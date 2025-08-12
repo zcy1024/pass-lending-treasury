@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@/store";
 import { setNavTab } from "@/store/modules/info";
-import { PassKey } from "@/components/navigation/index";
+import { PassKey } from "@/components";
 
 export default function Navigation() {
     const navTab = useAppSelector(state => state.info.navTab);

@@ -121,6 +121,29 @@
   }
 }
 
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* Safari */
+  margin: 0;
+}
+
+@layer utilities {
+  /* 隐藏 Chrome, Safari 和 Opera 的滚动条 */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  /* 隐藏 IE, Edge 和 Firefox 的滚动条 */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE 和 Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
+
 @theme {
   --animate-rotate: rotate 3s infinite alternate ease-in-out;
   @keyframes rotate {
