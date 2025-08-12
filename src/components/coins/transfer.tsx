@@ -2,14 +2,20 @@
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import { useAppSelector, AppDispatch } from "@/store";
 import { useDispatch } from "react-redux";
 import { setTransferList } from "@/store/modules/info";
+import { setTransactions, transferType } from "@/store/modules/tx";
+import { useState } from "react";
 
 export default function Transfer() {
     const dispatch = useDispatch<AppDispatch>();
     const transferList = useAppSelector(state => state.info.transferList);
+    const transactions = useAppSelector(state => state.tx.transactions);
+
+    const [receipt, setReceipt] = useState<string>("");
 
     const handleChangeTransferValue = (name: string, value: string) => {
         dispatch(setTransferList(transferList.map(coin => {
@@ -18,6 +24,18 @@ export default function Transfer() {
                 transferValue: name === coin.name ? value : coin.transferValue
             }
         })));
+    }
+
+    const addTransactions = () => {
+        const validCoins = transferList.filter(coin => coin.transferValue && coin.transferValue !== "" && Number(coin.transferValue) !== 0);
+        dispatch(setTransactions(transactions.concat(validCoins.map(coin => {
+            return {
+                type: "transfer",
+                name: coin.name,
+                value: Number(coin.transferValue),
+                receipt
+            } as transferType;
+        }))));
     }
 
     return (
@@ -56,7 +74,19 @@ export default function Transfer() {
                     </div>
                 );
             })}
-            <Button className="w-full cursor-pointer" onClick={() => console.log(transferList.map(coin => Number(coin.transferValue)))}>Add Transaction</Button>
+            <div className="flex flex-col gap-1">
+                <Label htmlFor="receipt">Transfer To:</Label>
+                <Input className="w-full h-full"
+                       type="text" id="receipt" placeholder="address"
+                       value={receipt}
+                       onChange={e => setReceipt(e.target.value)}
+                />
+            </div>
+            <Button className="w-full cursor-pointer"
+                    disabled={!receipt || !transferList.find(coin => coin.transferValue && coin.transferValue !== "" && Number(coin.transferValue) !== 0)}
+                    onClick={addTransactions}>
+                Add Transaction
+            </Button>
         </div>
     );
 }

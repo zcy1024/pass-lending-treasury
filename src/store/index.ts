@@ -3,10 +3,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 import infoReducer from "@/store/modules/info";
+import txReducer from "@/store/modules/tx";
 
 const store = configureStore({
     reducer: {
-        info: infoReducer
+        info: infoReducer,
+        tx: txReducer
     }
 });
 
