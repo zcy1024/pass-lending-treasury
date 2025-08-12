@@ -6,7 +6,8 @@ import { randomTwentyFive } from "@/lib/utils";
 
 type coinType = {
     name: string,
-    value: number
+    value: number,
+    transferValue?: string
 }
 
 type initialStateType = {

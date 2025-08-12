@@ -26,7 +26,10 @@ export default function CoinInfo() {
                             canTransfer &&
                             <div className="absolute opacity-0 p-1 group-hover:relative group-hover:opacity-100">
                                 <Button variant="outline" className="w-full h-6 rounded-full text-[#0a0e0f] font-sans opacity-0 group-hover:opacity-90 transition-all cursor-pointer"
-                                        onClick={() => dispatch(setTransferList(transferList.concat(info)))}>
+                                        onClick={() => dispatch(setTransferList(transferList.concat({
+                                            ...info,
+                                            transferValue: ""
+                                        })))}>
                                     Transfer
                                 </Button>
                             </div>
@@ -35,7 +38,12 @@ export default function CoinInfo() {
                 );
             })}
             <Button className="w-full cursor-pointer" disabled={coins.length === transferList.length}
-                    onClick={() => dispatch(setTransferList(coins))}>
+                    onClick={() => dispatch(setTransferList(coins.map(coin => {
+                        return {
+                            ...coin,
+                            transferValue: coin.value.toString()
+                        }
+                    })))}>
                 Transfer All
             </Button>
         </div>
