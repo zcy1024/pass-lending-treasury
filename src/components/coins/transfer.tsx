@@ -28,14 +28,12 @@ export default function Transfer() {
 
     const addTransactions = () => {
         const validCoins = transferList.filter(coin => coin.transferValue && coin.transferValue !== "" && Number(coin.transferValue) !== 0);
-        dispatch(setTransactions(transactions.concat(validCoins.map(coin => {
-            return {
-                type: "transfer",
-                name: coin.name,
-                value: Number(coin.transferValue),
-                receipt
-            } as transferType;
-        }))));
+        dispatch(setTransactions(transactions.concat([{
+            type: "transfer",
+            names: validCoins.map(coin => coin.name),
+            values: validCoins.map(coin => Number(coin.transferValue)),
+            receipt
+        } as transferType])));
     }
 
     return (

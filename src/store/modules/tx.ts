@@ -4,12 +4,23 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export type transferType = {
     type: string,
-    name: string,
-    value: number,
+    names: string[],
+    values: number[],
     receipt: string
 }
 
 type transactionType = (transferType)[];
+
+export const typeToInfo = new Map<string, {
+    src: string,
+    alt: string,
+    fallback: string
+}>;
+typeToInfo.set("transfer", {
+    src: "/sui.png",
+    alt: "sui logo",
+    fallback: "Sui"
+})
 
 type initialStateType = {
     transactions: transactionType
