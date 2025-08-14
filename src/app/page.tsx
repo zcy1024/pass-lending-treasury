@@ -2,7 +2,7 @@
 
 import { useDispatch } from "react-redux";
 import { useAppSelector, AppDispatch } from "@/store";
-import { CoinList, Loading, Navigation, Swap } from "@/components";
+import { CoinList, Loading, Navigation, OpenTxCheck, Swap } from "@/components";
 import { useEffect } from "react";
 import { initProgress } from "@/store/modules/info";
 
@@ -23,6 +23,7 @@ export default function Home() {
                     <CoinList />
                 </div>
             </div>
+            <OpenTxCheck />
             { processValue >= 0 && <Loading /> }
         </div>
     );
