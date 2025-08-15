@@ -4,7 +4,7 @@ import { createSlice, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
 import { Dispatch } from "react";
 import { randomTwentyFive } from "@/lib/utils";
 
-type coinType = {
+export type coinType = {
     name: string,
     value: number,
     transferValue?: string
@@ -13,6 +13,7 @@ type coinType = {
 type initialStateType = {
     coins: coinType[],
     transferList: coinType[],
+    newCoins: coinType[],
     navTab: string,
     progressValue: number
 }
@@ -37,6 +38,7 @@ const initialState: initialStateType = {
         }
     ],
     transferList: [],
+    newCoins: [],
     navTab: "Supply",
     progressValue: 0
 }
@@ -50,6 +52,9 @@ const infoStore = createSlice({
         },
         setTransferList(state, action: { payload: coinType[] }) {
             state.transferList = action.payload;
+        },
+        setNewCoins(state, action: { payload: coinType[] }) {
+            state.newCoins = action.payload;
         },
         setNavTab(state, action: { payload: string }) {
             state.navTab = action.payload;
@@ -78,6 +83,7 @@ const initProgress = () => {
 const {
     setCoins,
     setTransferList,
+    setNewCoins,
     setNavTab,
     setProgressValue
 } = infoStore.actions;
@@ -85,6 +91,7 @@ const {
 export {
     setCoins,
     setTransferList,
+    setNewCoins,
     setNavTab,
     setProgressValue
 };

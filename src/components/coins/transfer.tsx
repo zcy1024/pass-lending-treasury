@@ -7,15 +7,17 @@ import { X } from "lucide-react";
 import { useAppSelector, AppDispatch } from "@/store";
 import { useDispatch } from "react-redux";
 import { setTransferList } from "@/store/modules/info";
-import { setTransactions, transferType } from "@/store/modules/tx";
+import { transferType, updateTransactionsInfo } from "@/store/modules/tx";
 import { useState } from "react";
 
 export default function Transfer() {
     const dispatch = useDispatch<AppDispatch>();
+    const coins = useAppSelector(state => state.info.coins);
     const transferList = useAppSelector(state => state.info.transferList);
     const transactions = useAppSelector(state => state.tx.transactions);
 
     const [receipt, setReceipt] = useState<string>("");
+    const [isValid, setIsValid] = useState<boolean>(true);
 
     const handleChangeTransferValue = (name: string, value: string) => {
         dispatch(setTransferList(transferList.map(coin => {
@@ -28,12 +30,17 @@ export default function Transfer() {
 
     const addTransactions = () => {
         const validCoins = transferList.filter(coin => coin.transferValue && coin.transferValue !== "" && Number(coin.transferValue) !== 0);
-        dispatch(setTransactions(transactions.concat([{
-            type: "transfer",
-            names: validCoins.map(coin => coin.name),
-            values: validCoins.map(coin => Number(coin.transferValue)),
-            receipt
-        } as transferType])));
+        const isValid = dispatch(updateTransactionsInfo(coins, transactions.concat([{
+                type: "transfer",
+                names: validCoins.map(coin => coin.name),
+                values: validCoins.map(coin => Number(coin.transferValue)),
+                receipt
+            } as transferType])));
+        if (!isValid) {
+            setIsValid(false);
+            return;
+        }
+        dispatch(setTransferList([]));
     }
 
     return (
@@ -80,6 +87,9 @@ export default function Transfer() {
                        onChange={e => setReceipt(e.target.value)}
                 />
             </div>
+            <span className={"w-full text-left text-xs font-sans -my-2 " + (isValid ? "text-[#afb3b5]" : "text-red-600")}>
+                {isValid ? "Fill in the info" : "Error info found"}
+            </span>
             <Button className="w-full cursor-pointer"
                     disabled={!receipt || !transferList.find(coin => coin.transferValue && coin.transferValue !== "" && Number(coin.transferValue) !== 0)}
                     onClick={addTransactions}>
