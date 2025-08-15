@@ -2,11 +2,24 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { transferType, typeToInfo } from "@/store/modules/tx";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
+import { transferType, typeToInfo, updateNewCoins, updateTransactionsInfo } from "@/store/modules/tx";
+import { useAppSelector, AppDispatch } from "@/store";
+import { useDispatch } from "react-redux";
+import { Dispatch, SetStateAction } from "react";
 
-export default function TxDetail({transaction}: {transaction: transferType}) {
+export default function TxDetail({transaction, index, setOpenAction}: {
+    transaction: transferType,
+    index: number,
+    setOpenAction: Dispatch<SetStateAction<boolean>>
+}) {
+    const dispatch = useDispatch<AppDispatch>();
+    const coins = useAppSelector(state => state.info.coins);
+    const transactions = useAppSelector(state => state.tx.transactions);
+
     return (
-        <ScrollArea className="w-48 h-60 border border-[#0a0e0f] rounded-xl px-5 py-1">
+        <ScrollArea className="relative w-48 h-60 border border-[#0a0e0f] rounded-xl px-5 py-1">
             <div className="flex flex-col items-center font-mono">
                 <div className="flex items-center">
                     <Avatar className="h-5 w-5">
@@ -29,6 +42,14 @@ export default function TxDetail({transaction}: {transaction: transferType}) {
                     );
                 })}
             </div>
+            <Button className="absolute top-1 right-1 h-6 w-6 cursor-pointer"
+                    variant="ghost" disabled={!updateNewCoins(coins.concat(), transactions.filter((_, idx) => idx !== index))[0]}
+                    onClick={() => {
+                        setOpenAction(transactions.length > 1);
+                        dispatch(updateTransactionsInfo(coins, transactions.filter((_, idx) => idx !== index)));
+                    }}>
+                <X />
+            </Button>
         </ScrollArea>
     );
 }

@@ -17,13 +17,14 @@ import { useDispatch } from "react-redux";
 import { updateTransactionsInfo } from "@/store/modules/tx";
 
 export default function DetailDrawer() {
+    const [open, setOpen] = useState<boolean>(false);
     const [page, setPage] = useState<number>(0);
     const dispatch = useDispatch<AppDispatch>();
     const coins = useAppSelector(state => state.info.coins);
     const transactions = useAppSelector(state => state.tx.transactions);
 
     return (
-        <Drawer>
+        <Drawer open={open} onOpenChange={setOpen}>
             <DrawerTrigger asChild>
                 <PanelBottomOpen className="cursor-pointer" color="#196ae3" />
             </DrawerTrigger>
@@ -42,7 +43,7 @@ export default function DetailDrawer() {
                     <div className="flex flex-1 justify-around items-center">
                         {transactions.slice(page * 4, page * 4 + 4).map((transaction, index) => {
                             return (
-                                <div key={index}><TxDetail transaction={transaction} /></div>
+                                <div key={index}><TxDetail transaction={transaction} index={index} setOpenAction={setOpen} /></div>
                             );
                         })}
                     </div>
