@@ -14,11 +14,12 @@ import { TxDetail } from "@/components";
 import { useAppSelector, AppDispatch } from "@/store";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setTransactions } from "@/store/modules/tx";
+import { updateTransactionsInfo } from "@/store/modules/tx";
 
 export default function DetailDrawer() {
     const [page, setPage] = useState<number>(0);
     const dispatch = useDispatch<AppDispatch>();
+    const coins = useAppSelector(state => state.info.coins);
     const transactions = useAppSelector(state => state.tx.transactions);
 
     return (
@@ -57,7 +58,7 @@ export default function DetailDrawer() {
                     <div className="flex gap-6 items-center">
                         <DrawerClose asChild>
                             <Button className="w-24 cursor-pointer" variant="outline"
-                                    onClick={() => dispatch(setTransactions([]))}>
+                                    onClick={() => dispatch(updateTransactionsInfo(coins, []))}>
                                 Clear
                             </Button>
                         </DrawerClose>
