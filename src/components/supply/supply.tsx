@@ -8,7 +8,7 @@ export default function Supply() {
     const naviSupply = useAppSelector(state => state.navi);
 
     return (
-        <ScrollArea className="w-full h-full p-1 border border-black">
+        <ScrollArea className="w-full h-full p-1">
             <SupplyCard title={naviSupply.title} supplyCoins={naviSupply.coins} />
             <SupplyCard title={naviSupply.title} supplyCoins={naviSupply.coins} />
             <SupplyCard title={naviSupply.title} supplyCoins={naviSupply.coins} />
