@@ -10,9 +10,21 @@ export type supplyCoinType = {
     apr: number
 }
 
+export type withdrawCoinType = {
+    name: string
+    supplied: number
+}
+
+export type rewardCoinType = {
+    name: string,
+    reward: number
+}
+
 type initialStateType = {
     title: string,
-    coins: supplyCoinType[]
+    coins: supplyCoinType[],
+    withdrawCoins: withdrawCoinType[],
+    rewardCoins: rewardCoinType[]
 }
 
 const initialState: initialStateType = {
@@ -45,6 +57,42 @@ const initialState: initialStateType = {
             alt: "buck logo",
             fallback: "Buck",
             apr: 10.6
+        }
+    ],
+    withdrawCoins: [
+        {
+            name: "Sui",
+            supplied: 1000000000
+        },
+        {
+            name: "Navx",
+            supplied: 987654
+        },
+        {
+            name: "Scallop",
+            supplied: 126498
+        },
+        {
+            name: "Buck",
+            supplied: 6549751
+        }
+    ],
+    rewardCoins: [
+        {
+            name: "Sui",
+            reward: 1000000000
+        },
+        {
+            name: "Navx",
+            reward: 987654
+        },
+        {
+            name: "Scallop",
+            reward: 126498
+        },
+        {
+            name: "Buck",
+            reward: 6549751
         }
     ]
 }

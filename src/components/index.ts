@@ -6,7 +6,7 @@ import Swap from "@/components/swap";
 import { CoinList, CoinInfo, Transfer } from "@/components/coins";
 import { OpenTxCheck, DetailDrawer, TxDetail } from "@/components/transactions";
 import { Supply, SupplyCard } from "@/components/supply";
-import { Withdraw } from "@/components/withdraw";
+import { Withdraw, WithdrawCard } from "@/components/withdraw";
 
 export {
     Loading,
@@ -22,4 +22,5 @@ export {
     Supply,
     SupplyCard,
     Withdraw,
+    WithdrawCard
 }
