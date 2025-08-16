@@ -18,7 +18,7 @@ export default function Home() {
         <div className="relative w-screen h-screen bg-[#f1f2f5] text-[#0a0e0f]">
             <div className="flex flex-col items-center w-full h-full">
                 <Navigation />
-                <div className="relative flex-1 w-full min-w-[1024px] px-32 xl:px-64 2xl:px-96 py-10">
+                <div className="relative flex-1 w-full min-w-[1024px] px-32 xl:px-64 2xl:px-96 py-10 overflow-y-scroll">
                     {tab === "Supply" ? <Supply /> : <Withdraw />}
                     <Swap />
                     <CoinList />
