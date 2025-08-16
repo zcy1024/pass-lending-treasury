@@ -3,6 +3,7 @@
 import { rewardCoinType, withdrawCoinType } from "@/store/modules/navi";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { RewardsDetail } from "@/components";
 
 export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
     title: string,
@@ -28,7 +29,7 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                 );
             })}
             <div className="flex gap-2 justify-end items-center mt-6">
-                <Button className="w-36 h-8 cursor-pointer font-sans" variant="outline">Rewards Detail</Button>
+                <RewardsDetail title={title} rewardCoins={rewardCoins} />
                 <Button className="w-36 h-8 cursor-pointer font-sans">Claim Reward</Button>
                 <Button className="w-36 h-8 cursor-pointer font-sans">Claim And ReSupply</Button>
             </div>
