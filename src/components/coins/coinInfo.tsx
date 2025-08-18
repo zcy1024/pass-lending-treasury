@@ -4,24 +4,12 @@ import { Button } from "@/components/ui/button";
 import { useAppSelector, AppDispatch } from "@/store";
 import { useDispatch } from "react-redux";
 import { coinType, setTransferList } from "@/store/modules/info";
-import { useEffect, useState } from "react";
 
 export default function CoinInfo() {
     const dispatch = useDispatch<AppDispatch>();
     const coins = useAppSelector(state => state.info.coins);
-    const newCoins = useAppSelector(state => state.info.newCoins);
+    const realCoins = useAppSelector(state => state.info.realCoins);
     const transferList = useAppSelector(state => state.info.transferList);
-
-    const [infos, setInfos] = useState<coinType[]>([]);
-    useEffect(() => {
-        let temp: coinType[] = [];
-        temp = temp.concat(coins.map(coin => {
-            const index = newCoins.findIndex(newCoin => coin.name === newCoin.name);
-            return index === -1 ? coin : newCoins[index];
-        }))
-        temp = temp.concat(newCoins.filter(newCoin => coins.findIndex(coin => coin.name === newCoin.name) === -1));
-        setInfos(temp.filter(coin => coin.value > 0));
-    }, [coins, newCoins]);
 
     const checkUpdated = (newCoin: coinType) => {
         const index = coins.findIndex(coin => coin.name === newCoin.name);
@@ -31,8 +19,8 @@ export default function CoinInfo() {
     return (
         <div className="flex flex-col gap-3 items-center h-full w-1/12 min-w-[150px] font-mono">
             <span className="font-bold text-xl">Coins</span>
-            {infos.length === 0 && <span className="font-sans text-xs text-[#afb3b5]">no coins</span>}
-            {infos.map((info, index) => {
+            {realCoins.length === 0 && <span className="font-sans text-xs text-[#afb3b5]">no coins</span>}
+            {realCoins.map((info, index) => {
                 const canTransfer = transferList.find(list => list.name === info.name) === undefined;
                 return (
                     <div key={index}
@@ -56,8 +44,8 @@ export default function CoinInfo() {
                     </div>
                 );
             })}
-            <Button className="w-full cursor-pointer" disabled={infos.length === transferList.length}
-                    onClick={() => dispatch(setTransferList(infos.map(coin => {
+            <Button className="w-full cursor-pointer" disabled={realCoins.length === transferList.length}
+                    onClick={() => dispatch(setTransferList(realCoins.map(coin => {
                         return {
                             ...coin,
                             transferValue: coin.value.toString()

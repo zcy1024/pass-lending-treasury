@@ -22,6 +22,9 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                             <span className="text-xs text-[#afb3b5]">Supplied: {coin.supplied}</span>
                             <div className="flex gap-2 items-center">
                                 <Input className="h-full" type="number" placeholder="Withdraw Coin Value" />
+                                <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline">1/4</Button>
+                                <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline">1/2</Button>
+                                <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline">Max</Button>
                                 <Button className="w-24 h-6 cursor-pointer font-sans">Withdraw</Button>
                             </div>
                         </div>

@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useAppSelector, AppDispatch } from "@/store";
 import { CoinList, Loading, Navigation, OpenTxCheck, Supply, Swap, Withdraw } from "@/components";
 import { useEffect } from "react";
-import { initProgress } from "@/store/modules/info";
+import { initProgress, setCoins } from "@/store/modules/info";
 
 export default function Home() {
     const dispatch = useDispatch<AppDispatch>();
@@ -12,6 +12,24 @@ export default function Home() {
     const processValue = useAppSelector(state => state.info.progressValue);
     useEffect(() => {
         dispatch(initProgress());
+        dispatch(setCoins([
+            {
+                name: "Sui",
+                value: 1000000000
+            },
+            {
+                name: "NAVX",
+                value: 100
+            },
+            {
+                name: "SCALLOP",
+                value: 999
+            },
+            {
+                name: "BUCK",
+                value: 987654
+            }
+        ]));
     }, [dispatch]);
 
     return (
