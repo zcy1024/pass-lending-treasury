@@ -3,6 +3,7 @@
 import { createSlice, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
 import { Dispatch } from "react";
 import { randomTwentyFive } from "@/lib/utils";
+import { getPasskeyKeypair } from "@/configs/passkey";
 
 export type coinType = {
     name: string,
@@ -11,6 +12,7 @@ export type coinType = {
 }
 
 type initialStateType = {
+    address: string,
     coins: coinType[],
     transferList: coinType[],
     newCoins: coinType[],
@@ -20,6 +22,7 @@ type initialStateType = {
 }
 
 const initialState: initialStateType = {
+    address: "",
     coins: [],
     transferList: [],
     newCoins: [],
@@ -32,6 +35,9 @@ const infoStore = createSlice({
     name: "info",
     initialState,
     reducers: {
+        setAddress(state, action: { payload: string }) {
+            state.address = action.payload;
+        },
         setCoins(state, action: { payload: coinType[] }) {
             state.coins = action.payload;
             state.realCoins = calcRealCoins(state.coins, state.newCoins);
@@ -77,7 +83,22 @@ const calcRealCoins = (coins: coinType[], newCoins: coinType[]) => {
     return temp;
 }
 
+const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
+    return async (dispatch: ThunkDispatch<{
+        info: initialStateType
+    }, undefined, UnknownAction> & Dispatch<UnknownAction>) => {
+        if (publicKeyBytes) {
+            const keypair = getPasskeyKeypair(window.location.hostname, publicKeyBytes);
+            const address = keypair.toSuiAddress();
+            dispatch(setAddress(address));
+            return;
+        }
+        dispatch(setAddress(""));
+    }
+}
+
 const {
+    setAddress,
     setCoins,
     setTransferList,
     setNewCoins,
@@ -86,6 +107,7 @@ const {
 } = infoStore.actions;
 
 export {
+    setAddress,
     setCoins,
     setTransferList,
     setNewCoins,
@@ -95,7 +117,8 @@ export {
 
 export {
     initProgress,
-    calcRealCoins
+    calcRealCoins,
+    refreshAll,
 }
 
 export default infoStore.reducer;

@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useAppSelector, AppDispatch } from "@/store";
 import { CoinList, Loading, Navigation, OpenTxCheck, Supply, Swap, Withdraw } from "@/components";
 import { useEffect } from "react";
-import { initProgress, setCoins } from "@/store/modules/info";
+import { initProgress, refreshAll, setCoins } from "@/store/modules/info";
 
 export default function Home() {
     const dispatch = useDispatch<AppDispatch>();
@@ -12,6 +12,8 @@ export default function Home() {
     const processValue = useAppSelector(state => state.info.progressValue);
     useEffect(() => {
         dispatch(initProgress());
+        const stored = JSON.parse(localStorage.getItem("sui_passkey_data") || "null");
+        dispatch(refreshAll(!stored ? undefined : new Uint8Array(stored.publicKeyBytes)));
         dispatch(setCoins([
             {
                 name: "Sui",
