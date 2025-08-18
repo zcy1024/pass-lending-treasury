@@ -38,21 +38,21 @@ const initialState: initialStateType = {
             apr: 3.8
         },
         {
-            name: "Navx",
+            name: "NAVX",
             src: "/navx.png",
             alt: "navx logo",
             fallback: "Navx",
             apr: 44.44
         },
         {
-            name: "Scallop",
+            name: "SCALLOP",
             src: "/scallop.png",
             alt: "scallop logo",
             fallback: "Scallop",
             apr: 0.36
         },
         {
-            name: "Buck",
+            name: "BUCK",
             src: "/buck.png",
             alt: "buck logo",
             fallback: "Buck",
@@ -65,15 +65,15 @@ const initialState: initialStateType = {
             supplied: 1000000000
         },
         {
-            name: "Navx",
+            name: "NAVX",
             supplied: 987654
         },
         {
-            name: "Scallop",
+            name: "SCALLOP",
             supplied: 126498
         },
         {
-            name: "Buck",
+            name: "BUCK",
             supplied: 6549751
         }
     ],
@@ -83,15 +83,15 @@ const initialState: initialStateType = {
             reward: 1000000000
         },
         {
-            name: "Navx",
+            name: "NAVX",
             reward: 987654
         },
         {
-            name: "Scallop",
+            name: "SCALLOP",
             reward: 126498
         },
         {
-            name: "Buck",
+            name: "BUCK",
             reward: 6549751
         }
     ]
