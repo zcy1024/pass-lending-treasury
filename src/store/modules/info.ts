@@ -4,9 +4,12 @@ import { createSlice, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
 import { Dispatch } from "react";
 import { randomTwentyFive } from "@/lib/utils";
 import { getPasskeyKeypair } from "@/configs/passkey";
+import { getCoins } from "@/lib/coinInfo";
 
 export type coinType = {
+    coinType: string,
     name: string,
+    decimals: number,
     value: number,
     transferValue?: string
 }
@@ -76,10 +79,10 @@ const initProgress = () => {
 const calcRealCoins = (coins: coinType[], newCoins: coinType[]) => {
     let temp: coinType[] = [];
     temp = temp.concat(coins.map(coin => {
-        const index = newCoins.findIndex(newCoin => coin.name === newCoin.name);
+        const index = newCoins.findIndex(newCoin => coin.coinType === newCoin.coinType);
         return index === -1 ? coin : newCoins[index];
     }))
-    temp = temp.concat(newCoins.filter(newCoin => coins.findIndex(coin => coin.name === newCoin.name) === -1));
+    temp = temp.concat(newCoins.filter(newCoin => coins.findIndex(coin => coin.coinType === newCoin.coinType) === -1));
     return temp;
 }
 
@@ -91,9 +94,11 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
             const keypair = getPasskeyKeypair(window.location.hostname, publicKeyBytes);
             const address = keypair.toSuiAddress();
             dispatch(setAddress(address));
+            dispatch(setCoins(await getCoins(address)));
             return;
         }
         dispatch(setAddress(""));
+        dispatch(setCoins([]));
     }
 }
 

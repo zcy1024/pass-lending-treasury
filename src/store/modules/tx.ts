@@ -6,7 +6,9 @@ import { coinType, setNewCoins } from "@/store/modules/info";
 
 export type transferType = {
     type: string,
+    coinTypes: string[],
     names: string[],
+    decimals: number[],
     values: number[],
     receipt: string
 }
@@ -46,13 +48,15 @@ const updateNewCoins = (coins: coinType[], transactions: transactionType): [bool
     try {
         transactions.forEach(transaction => {
             if (transaction.type === "transfer") {
-                transaction.names.forEach((name, index) => {
+                transaction.coinTypes.forEach((type, index) => {
                     const value = transaction.values[index];
-                    const coinIndex = coins.findIndex(coin => coin.name === name);
+                    const coinIndex = coins.findIndex(coin => coin.coinType === type);
                     if (coinIndex === -1 || coins[coinIndex].value < value)
                         throw Error();
                     coins[coinIndex] = {
+                        coinType: coins[coinIndex].coinType,
                         name: coins[coinIndex].name,
+                        decimals: coins[coinIndex].decimals,
                         value: coins[coinIndex].value - value
                     };
                 });

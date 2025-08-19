@@ -19,11 +19,11 @@ export default function Transfer() {
     const [receipt, setReceipt] = useState<string>("");
     const [isValid, setIsValid] = useState<boolean>(true);
 
-    const handleChangeTransferValue = (name: string, value: string) => {
+    const handleChangeTransferValue = (type: string, value: string) => {
         dispatch(setTransferList(transferList.map(coin => {
             return {
                 ...coin,
-                transferValue: name === coin.name ? value : coin.transferValue
+                transferValue: type === coin.coinType ? value : coin.transferValue
             }
         })));
     }
@@ -31,11 +31,13 @@ export default function Transfer() {
     const addTransactions = () => {
         const validCoins = transferList.filter(coin => coin.transferValue && coin.transferValue !== "" && Number(coin.transferValue) !== 0);
         const isValid = dispatch(updateTransactionsInfo(coins, transactions.concat([{
-                type: "transfer",
-                names: validCoins.map(coin => coin.name),
-                values: validCoins.map(coin => Number(coin.transferValue)),
-                receipt
-            } as transferType])));
+            type: "transfer",
+            coinTypes: validCoins.map(coin => coin.coinType),
+            names: validCoins.map(coin => coin.name),
+            decimals: validCoins.map(coin => coin.decimals),
+            values: validCoins.map(coin => Number(coin.transferValue)),
+            receipt
+        } as transferType])));
         if (!isValid) {
             setIsValid(false);
             return;
@@ -54,25 +56,25 @@ export default function Transfer() {
                             <span>{info.name}:</span>
                             <Input className="w-full h-full text-right"
                                    type="number" placeholder="coin"
-                                   value={info.transferValue}
-                                   onChange={e => handleChangeTransferValue(info.name, e.target.value)}
+                                   value={info.transferValue ? Number(info.transferValue) / info.decimals : ""}
+                                   onChange={e => handleChangeTransferValue(info.coinType, (Number(e.target.value) * info.decimals).toString())}
                             />
                         </div>
                         <div className="flex justify-between w-full text-xs text-[#0a0e0f] font-sans">
                             <Button variant="outline" className="cursor-pointer w-1/5 h-6"
-                                    onClick={() => handleChangeTransferValue(info.name, (Number(info.value) / 4).toString())}>
+                                    onClick={() => handleChangeTransferValue(info.coinType, (Number(info.value) / 4).toString())}>
                                 1/4
                             </Button>
                             <Button variant="outline" className="cursor-pointer w-1/5 h-6"
-                                    onClick={() => handleChangeTransferValue(info.name, (Number(info.value) / 2).toString())}>
+                                    onClick={() => handleChangeTransferValue(info.coinType, (Number(info.value) / 2).toString())}>
                                 1/2
                             </Button>
                             <Button variant="outline" className="cursor-pointer w-1/5 h-6"
-                                    onClick={() => handleChangeTransferValue(info.name, info.value.toString())}>
+                                    onClick={() => handleChangeTransferValue(info.coinType, info.value.toString())}>
                                 MAX
                             </Button>
                             <Button variant="outline" className="cursor-pointer w-1/5 h-6"
-                                    onClick={() => dispatch(setTransferList(transferList.filter(list => list.name !== info.name)))}>
+                                    onClick={() => dispatch(setTransferList(transferList.filter(list => list.coinType !== info.coinType)))}>
                                 <X/>
                             </Button>
                         </div>

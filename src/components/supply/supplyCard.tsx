@@ -13,28 +13,28 @@ export default function SupplyCard({title, supplyCoins}: {
 }) {
     const coins = useAppSelector(state => state.info.realCoins);
     const [supplyInfos, setSupplyInfos] = useState<{
-        name: string,
+        coinType: string,
         amount: string
     }[]>([]);
 
-    const getSupplyAmount = (name: string) => {
-        const index = supplyInfos.findIndex(info => info.name === name);
+    const getSupplyAmount = (type: string) => {
+        const index = supplyInfos.findIndex(info => info.coinType === type);
         return index === -1 ? "" : supplyInfos[index].amount;
     }
 
-    const updateSupplyInfo = (name: string, amount: string) => {
+    const updateSupplyInfo = (type: string, amount: string) => {
         setSupplyInfos([
-            ...supplyInfos.filter(info => info.name !== name),
+            ...supplyInfos.filter(info => info.coinType !== type),
             {
-                name,
+                coinType: type,
                 amount
             }
         ]);
     }
 
-    const isInvalidSupplyAmount = (name: string) => {
-        const input = getSupplyAmount(name);
-        const index = coins.findIndex(coin => coin.name === name);
+    const isInvalidSupplyAmount = (type: string) => {
+        const input = getSupplyAmount(type);
+        const index = coins.findIndex(coin => coin.coinType === type);
         return !input || index === -1 || Number(input) === 0 || Number(input) > coins[index].value;
     }
 
@@ -43,7 +43,7 @@ export default function SupplyCard({title, supplyCoins}: {
             <h3 className="font-bold text-xl my-1">{title}</h3>
             <hr />
             {supplyCoins.map((coin, index) => {
-                const ownedCoinIndex = coins.findIndex(info => info.name === coin.name);
+                const ownedCoinIndex = coins.findIndex(info => info.coinType === coin.coinType);
                 const ownedCoinValue = ownedCoinIndex === -1 ? 0 : coins[ownedCoinIndex].value;
 
                 return (
@@ -59,22 +59,22 @@ export default function SupplyCard({title, supplyCoins}: {
                             <span>{coin.apr}%</span>
                             <div className="flex gap-2 items-center">
                                 <Input className="h-full" type="number" placeholder="Supply Coin Value"
-                                       value={getSupplyAmount(coin.name)}
-                                       onChange={e => updateSupplyInfo(coin.name, e.target.value)} />
+                                       value={getSupplyAmount(coin.coinType)}
+                                       onChange={e => updateSupplyInfo(coin.coinType, e.target.value)} />
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateSupplyInfo(coin.name, (ownedCoinValue / 4).toFixed(2))}>
+                                        onClick={() => updateSupplyInfo(coin.coinType, (ownedCoinValue / 4).toFixed(2))}>
                                     1/4
                                 </Button>
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateSupplyInfo(coin.name, (ownedCoinValue / 2).toFixed(2))}>
+                                        onClick={() => updateSupplyInfo(coin.coinType, (ownedCoinValue / 2).toFixed(2))}>
                                     1/2
                                 </Button>
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateSupplyInfo(coin.name, ownedCoinValue.toFixed(2))}>
+                                        onClick={() => updateSupplyInfo(coin.coinType, ownedCoinValue.toFixed(2))}>
                                     Max
                                 </Button>
                                 <Button className="w-16 h-6 cursor-pointer font-sans"
-                                        disabled={isInvalidSupplyAmount(coin.name)}>
+                                        disabled={isInvalidSupplyAmount(coin.coinType)}>
                                     Add
                                 </Button>
                             </div>

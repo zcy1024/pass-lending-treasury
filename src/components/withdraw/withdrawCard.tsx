@@ -12,28 +12,28 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
     rewardCoins: rewardCoinType[],
 }) {
     const [withdrawInfos, setWithdrawInfos] = useState<{
-        name: string,
+        coinType: string,
         amount: string
     }[]>([]);
 
-    const getWithdrawAmount = (name: string) => {
-        const index = withdrawInfos.findIndex(info => info.name === name);
+    const getWithdrawAmount = (type: string) => {
+        const index = withdrawInfos.findIndex(info => info.coinType === type);
         return index === -1 ? "" : withdrawInfos[index].amount;
     }
 
-    const updateWithdrawInfo = (name: string, amount: string) => {
+    const updateWithdrawInfo = (type: string, amount: string) => {
         setWithdrawInfos([
-            ...withdrawInfos.filter(info => info.name !== name),
+            ...withdrawInfos.filter(info => info.coinType !== type),
             {
-                name,
+                coinType: type,
                 amount
             }
         ]);
     }
 
-    const isInvalidWithdrawAmount = (name: string) => {
-        const input = getWithdrawAmount(name);
-        const index = withdrawCoins.findIndex(coin => coin.name === name);
+    const isInvalidWithdrawAmount = (type: string) => {
+        const input = getWithdrawAmount(type);
+        const index = withdrawCoins.findIndex(coin => coin.coinType === type);
         return !input || index === -1 || Number(input) === 0 || Number(input) > withdrawCoins[index].supplied;
     }
 
@@ -49,22 +49,22 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                             <span className="text-xs text-[#afb3b5]">Supplied: {coin.supplied}</span>
                             <div className="flex gap-2 items-center">
                                 <Input className="h-full" type="number" placeholder="Withdraw Coin Value"
-                                       value={getWithdrawAmount(coin.name)}
-                                       onChange={e => updateWithdrawInfo(coin.name, e.target.value)} />
+                                       value={getWithdrawAmount(coin.coinType)}
+                                       onChange={e => updateWithdrawInfo(coin.coinType, e.target.value)} />
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateWithdrawInfo(coin.name, (coin.supplied / 4).toFixed(2))}>
+                                        onClick={() => updateWithdrawInfo(coin.coinType, (coin.supplied / 4).toFixed(2))}>
                                     1/4
                                 </Button>
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateWithdrawInfo(coin.name, (coin.supplied / 2).toFixed(2))}>
+                                        onClick={() => updateWithdrawInfo(coin.coinType, (coin.supplied / 2).toFixed(2))}>
                                     1/2
                                 </Button>
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateWithdrawInfo(coin.name, coin.supplied.toFixed(2))}>
+                                        onClick={() => updateWithdrawInfo(coin.coinType, coin.supplied.toFixed(2))}>
                                     Max
                                 </Button>
                                 <Button className="w-24 h-6 cursor-pointer font-sans"
-                                        disabled={isInvalidWithdrawAmount(coin.name)}>
+                                        disabled={isInvalidWithdrawAmount(coin.coinType)}>
                                     Withdraw
                                 </Button>
                             </div>

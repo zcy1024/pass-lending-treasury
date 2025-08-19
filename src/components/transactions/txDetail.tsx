@@ -36,8 +36,8 @@ export default function TxDetail({transaction, index, setOpenAction}: {
                 {transaction.names.map((name, index) => {
                     return (
                         <div className="flex justify-between items-center w-full" key={index}>
-                            <span>{name}:</span>
-                            <span>{transaction.values[index]}</span>
+                            <span>{name}</span>
+                            <span>{(transaction.values[index] / transaction.decimals[index]).toFixed(2)}</span>
                         </div>
                     );
                 })}
