@@ -14,7 +14,7 @@ export async function getCoins(owner: string) {
             continue;
         coins.push({
             coinType: balance.coinType,
-            name: metadata.name,
+            name: metadata.symbol,
             decimals: 10 ** metadata.decimals,
             value: Number(balance.totalBalance),
         });

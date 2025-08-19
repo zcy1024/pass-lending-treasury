@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAppSelector, AppDispatch } from "@/store";
 import { useDispatch } from "react-redux";
 import { coinType, setTransferList } from "@/store/modules/info";
+import { Swap } from "@/components";
 
 export default function CoinInfo() {
     const dispatch = useDispatch<AppDispatch>();
@@ -53,6 +54,7 @@ export default function CoinInfo() {
                     })))}>
                 Transfer All
             </Button>
+            <Swap />
         </div>
     );
 }

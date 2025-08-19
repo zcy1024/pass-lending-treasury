@@ -2,7 +2,7 @@
 
 import { useDispatch } from "react-redux";
 import { useAppSelector, AppDispatch } from "@/store";
-import { CoinList, Loading, Navigation, OpenTxCheck, Supply, Swap, Withdraw } from "@/components";
+import { CoinList, Loading, Navigation, OpenTxCheck, Supply, Withdraw } from "@/components";
 import { useEffect } from "react";
 import { initProgress, refreshAll } from "@/store/modules/info";
 
@@ -22,7 +22,6 @@ export default function Home() {
                 <Navigation />
                 <div className="relative flex-1 w-full min-w-[1024px] px-32 xl:px-64 2xl:px-96 py-10 overflow-y-scroll">
                     {tab === "Supply" ? <Supply /> : <Withdraw />}
-                    <Swap />
                     <CoinList />
                 </div>
             </div>

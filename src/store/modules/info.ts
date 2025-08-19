@@ -16,6 +16,7 @@ export type coinType = {
 
 type initialStateType = {
     address: string,
+    publicKeyArray: number[],
     coins: coinType[],
     transferList: coinType[],
     newCoins: coinType[],
@@ -26,6 +27,7 @@ type initialStateType = {
 
 const initialState: initialStateType = {
     address: "",
+    publicKeyArray: [],
     coins: [],
     transferList: [],
     newCoins: [],
@@ -40,6 +42,9 @@ const infoStore = createSlice({
     reducers: {
         setAddress(state, action: { payload: string }) {
             state.address = action.payload;
+        },
+        setPublicKeyArray(state, action: { payload: number[] }) {
+            state.publicKeyArray = action.payload;
         },
         setCoins(state, action: { payload: coinType[] }) {
             state.coins = action.payload;
@@ -94,16 +99,19 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
             const keypair = getPasskeyKeypair(window.location.hostname, publicKeyBytes);
             const address = keypair.toSuiAddress();
             dispatch(setAddress(address));
+            dispatch(setPublicKeyArray(Array.from(publicKeyBytes)));
             dispatch(setCoins(await getCoins(address)));
             return;
         }
         dispatch(setAddress(""));
+        dispatch(setPublicKeyArray([]))
         dispatch(setCoins([]));
     }
 }
 
 const {
     setAddress,
+    setPublicKeyArray,
     setCoins,
     setTransferList,
     setNewCoins,
@@ -113,6 +121,7 @@ const {
 
 export {
     setAddress,
+    setPublicKeyArray,
     setCoins,
     setTransferList,
     setNewCoins,

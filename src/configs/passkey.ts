@@ -22,7 +22,7 @@ function getPasskeyProvider(rpId: string) {
 let keypair: PasskeyKeypair;
 
 function getPasskeyKeypair(rpId: string, publicKeyBytes: Uint8Array) {
-    if (keypair && keypair.getPublicKey().toRawBytes() === publicKeyBytes)
+    if (keypair && keypair.getPublicKey().toRawBytes().toString() === publicKeyBytes.toString())
         return keypair;
     return keypair = new PasskeyKeypair(publicKeyBytes, getPasskeyProvider(rpId));
 }
