@@ -26,7 +26,7 @@ export default function RewardsDetail({title, rewardCoins}: {
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription className="font-sans">Rewards detail information.</DialogDescription>
                 </DialogHeader>
-                <ScrollArea className="max-h-72">
+                <ScrollArea className="max-h-96">
                     <div className="flex flex-col gap-1 px-10">
                         {rewardCoins.map((coin, index) => {
                             return (
