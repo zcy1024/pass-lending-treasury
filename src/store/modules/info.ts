@@ -10,15 +10,13 @@ export type coinType = {
     coinType: string,
     name: string,
     decimals: number,
-    value: number,
-    transferValue?: string
+    value: number
 }
 
 type initialStateType = {
     address: string,
     publicKeyArray: number[],
     coins: coinType[],
-    transferList: coinType[],
     newCoins: coinType[],
     realCoins: coinType[],
     navTab: string,
@@ -29,7 +27,6 @@ const initialState: initialStateType = {
     address: "",
     publicKeyArray: [],
     coins: [],
-    transferList: [],
     newCoins: [],
     realCoins: [],
     navTab: "Supply",
@@ -49,9 +46,6 @@ const infoStore = createSlice({
         setCoins(state, action: { payload: coinType[] }) {
             state.coins = action.payload;
             state.realCoins = calcRealCoins(state.coins, state.newCoins);
-        },
-        setTransferList(state, action: { payload: coinType[] }) {
-            state.transferList = action.payload;
         },
         setNewCoins(state, action: { payload: coinType[] }) {
             state.newCoins = action.payload;
@@ -113,7 +107,6 @@ const {
     setAddress,
     setPublicKeyArray,
     setCoins,
-    setTransferList,
     setNewCoins,
     setNavTab,
     setProgressValue
@@ -123,7 +116,6 @@ export {
     setAddress,
     setPublicKeyArray,
     setCoins,
-    setTransferList,
     setNewCoins,
     setNavTab,
     setProgressValue
