@@ -26,13 +26,19 @@ export default function DetailDrawer() {
     const [open, setOpen] = useState<boolean>(false);
     const [page, setPage] = useState<number>(0);
     const dispatch = useDispatch<AppDispatch>();
+    const account = useAppSelector(state => state.info.address);
     const coins = useAppSelector(state => state.info.coins);
     const transactions = useAppSelector(state => state.tx.transactions);
     const publicKeyArray = useAppSelector(state => state.info.publicKeyArray);
 
     const signAndExecuteTransaction = async () => {
         dispatch(setProgressValue(0));
-        const tx = assemblePTB(transactions);
+        const [tx, success] = await assemblePTB(transactions, account);
+        if (!success) {
+            dispatch(setProgressValue(100));
+            toast("Error transaction!");
+            return;
+        }
         try {
             const keypair = getPasskeyKeypair(window.location.hostname, new Uint8Array(publicKeyArray));
             const res = await suiClient.signAndExecuteTransaction({

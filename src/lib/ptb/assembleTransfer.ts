@@ -4,7 +4,8 @@ import { transferType } from "@/store/modules/tx";
 export default function assembleTransfer(tx: Transaction, transaction: transferType) {
     const coins = transaction.coinTypes.map((type, index) => coinWithBalance({
         type,
-        balance: Math.floor(transaction.values[index])
+        balance: Math.floor(transaction.values[index]),
+        useGasCoin: type === "0x2::sui::SUI"
     }));
     tx.transferObjects(coins, tx.pure.address(transaction.receipt));
 }
