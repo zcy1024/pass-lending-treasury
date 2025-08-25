@@ -13,7 +13,7 @@ export type transferType = {
     receipt: string
 }
 
-type transactionType = (transferType)[];
+export type transactionType = (transferType)[];
 
 export const typeToInfo = new Map<string, {
     src: string,

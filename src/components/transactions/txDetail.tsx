@@ -30,7 +30,7 @@ export default function TxDetail({transaction, index, setOpenAction}: {
                 </div>
                 {
                     transaction.type === "transfer" &&
-                    <span className="font-sans text-xs text-[#afb3b5] -mt-1">To: {transaction.receipt}</span>
+                    <span className="font-sans text-xs text-[#afb3b5] -mt-1">To: {transaction.receipt.slice(0, 6) + "..." + transaction.receipt.slice(-4)}</span>
                 }
                 <div className="w-full h-1"></div>
                 {transaction.names.map((name, index) => {

@@ -14,7 +14,13 @@ import { TxDetail } from "@/components";
 import { useAppSelector, AppDispatch } from "@/store";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { updateTransactionsInfo } from "@/store/modules/tx";
+import { setTransactions, updateTransactionsInfo } from "@/store/modules/tx";
+import assemblePTB from "@/lib/ptb";
+import { initProgress, refreshAll, setProgressValue } from "@/store/modules/info";
+import { getPasskeyKeypair } from "@/configs/passkey";
+import { suiClient } from "@/configs/networkConfig";
+import { randomTwentyFive } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function DetailDrawer() {
     const [open, setOpen] = useState<boolean>(false);
@@ -22,6 +28,38 @@ export default function DetailDrawer() {
     const dispatch = useDispatch<AppDispatch>();
     const coins = useAppSelector(state => state.info.coins);
     const transactions = useAppSelector(state => state.tx.transactions);
+    const publicKeyArray = useAppSelector(state => state.info.publicKeyArray);
+
+    const signAndExecuteTransaction = async () => {
+        dispatch(setProgressValue(0));
+        const tx = assemblePTB(transactions);
+        try {
+            const keypair = getPasskeyKeypair(window.location.hostname, new Uint8Array(publicKeyArray));
+            const res = await suiClient.signAndExecuteTransaction({
+                transaction: tx,
+                signer: keypair
+            });
+            dispatch(setProgressValue(randomTwentyFive()));
+            await suiClient.waitForTransaction({
+                digest: res.digest
+            });
+            dispatch(refreshAll(new Uint8Array(publicKeyArray)));
+            dispatch(setTransactions([]));
+            dispatch(initProgress());
+            toast("Successful transaction!", {
+                description: "Tx digest: " + res.digest.slice(0, 6) + "..." + res.digest.slice(-4),
+                action: {
+                    label: "view details",
+                    onClick: () => window.open(`https://suivision.xyz/txblock/${res.digest}`, "_blank")
+                }
+            });
+            setOpen(false);
+        } catch (e) {
+            console.error(e);
+            dispatch(setProgressValue(100));
+            toast("Error transaction!");
+        }
+    }
 
     return (
         <Drawer open={open} onOpenChange={setOpen}>
@@ -55,7 +93,7 @@ export default function DetailDrawer() {
                                 }} />
                 </div>
                 <DrawerFooter className="flex flex-col items-center w-full font-sans">
-                    <Button className="w-24 cursor-pointer">Confirm</Button>
+                    <Button className="w-24 cursor-pointer" onClick={signAndExecuteTransaction}>Confirm</Button>
                     <div className="flex gap-6 items-center">
                         <DrawerClose asChild>
                             <Button className="w-24 cursor-pointer" variant="outline"

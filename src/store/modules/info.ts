@@ -94,11 +94,13 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
             const address = keypair.toSuiAddress();
             dispatch(setAddress(address));
             dispatch(setPublicKeyArray(Array.from(publicKeyBytes)));
+            dispatch(setNewCoins([]));
             dispatch(setCoins(await getCoins(address)));
             return;
         }
         dispatch(setAddress(""));
-        dispatch(setPublicKeyArray([]))
+        dispatch(setPublicKeyArray([]));
+        dispatch(setNewCoins([]));
         dispatch(setCoins([]));
     }
 }
