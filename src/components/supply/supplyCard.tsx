@@ -45,6 +45,7 @@ export default function SupplyCard({title, supplyCoins}: {
             {supplyCoins.map((coin, index) => {
                 const ownedCoinIndex = coins.findIndex(info => info.coinType === coin.coinType);
                 const ownedCoinValue = ownedCoinIndex === -1 ? 0 : coins[ownedCoinIndex].value;
+                const decimals = ownedCoinIndex === -1 ? 1 : coins[ownedCoinIndex].decimals;
 
                 return (
                     <div key={index} className="flex justify-between items-center px-10 m-1">
@@ -62,15 +63,15 @@ export default function SupplyCard({title, supplyCoins}: {
                                        value={getSupplyAmount(coin.coinType)}
                                        onChange={e => updateSupplyInfo(coin.coinType, e.target.value)} />
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateSupplyInfo(coin.coinType, (ownedCoinValue / 4).toFixed(2))}>
+                                        onClick={() => updateSupplyInfo(coin.coinType, (ownedCoinValue / 4 / decimals).toString())}>
                                     1/4
                                 </Button>
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateSupplyInfo(coin.coinType, (ownedCoinValue / 2).toFixed(2))}>
+                                        onClick={() => updateSupplyInfo(coin.coinType, (ownedCoinValue / 2 / decimals).toString())}>
                                     1/2
                                 </Button>
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateSupplyInfo(coin.coinType, ownedCoinValue.toFixed(2))}>
+                                        onClick={() => updateSupplyInfo(coin.coinType, (ownedCoinValue / decimals).toString())}>
                                     Max
                                 </Button>
                                 <Button className="w-16 h-6 cursor-pointer font-sans"

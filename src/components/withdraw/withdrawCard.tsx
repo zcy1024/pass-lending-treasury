@@ -5,12 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RewardsDetail } from "@/components";
 import { useState } from "react";
+import { useAppSelector } from "@/store";
 
 export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
     title: string,
     withdrawCoins: withdrawCoinType[],
     rewardCoins: rewardCoinType[],
 }) {
+    const coins = useAppSelector(state => state.info.realCoins);
     const [withdrawInfos, setWithdrawInfos] = useState<{
         coinType: string,
         amount: string
@@ -42,6 +44,9 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
             <h3 className="font-bold text-xl my-1">{title}</h3>
             <hr />
             {withdrawCoins.map((coin, index) => {
+                const ownedCoinIndex = coins.findIndex(info => info.coinType === coin.coinType);
+                const decimals = ownedCoinIndex === -1 ? 1 : coins[ownedCoinIndex].decimals;
+
                 return (
                     <div key={index} className="flex justify-between items-center px-10 m-1">
                         <h4 className="font-bold">{coin.name}</h4>
@@ -52,15 +57,15 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                                        value={getWithdrawAmount(coin.coinType)}
                                        onChange={e => updateWithdrawInfo(coin.coinType, e.target.value)} />
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateWithdrawInfo(coin.coinType, (coin.supplied / 4).toFixed(2))}>
+                                        onClick={() => updateWithdrawInfo(coin.coinType, (coin.supplied / 4 / decimals).toString())}>
                                     1/4
                                 </Button>
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateWithdrawInfo(coin.coinType, (coin.supplied / 2).toFixed(2))}>
+                                        onClick={() => updateWithdrawInfo(coin.coinType, (coin.supplied / 2 / decimals).toString())}>
                                     1/2
                                 </Button>
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateWithdrawInfo(coin.coinType, coin.supplied.toFixed(2))}>
+                                        onClick={() => updateWithdrawInfo(coin.coinType, (coin.supplied / decimals).toString())}>
                                     Max
                                 </Button>
                                 <Button className="w-24 h-6 cursor-pointer font-sans"

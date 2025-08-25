@@ -123,7 +123,7 @@ export default function TransferCard() {
                                         </Select>
                                         <Input className="w-56 h-full"
                                                type="number" placeholder="coin value"
-                                               value={item.value === "" ? "" : (Number(item.value) / decimals).toFixed(2)}
+                                               value={item.value}
                                                onChange={e => setList(list.map((item, idx) => idx !== index ? item : {
                                                    coinType: item.coinType,
                                                    value: e.target.value
@@ -133,21 +133,21 @@ export default function TransferCard() {
                                         <Button variant="outline" className="w-12 h-6 cursor-pointer"
                                                 onClick={() => setList(list.map((item, idx) => idx !== index ? item : {
                                                     coinType: item.coinType,
-                                                    value: (amount / 4).toString()
+                                                    value: (amount / 4 / decimals).toString()
                                                 }))}>
                                             1/4
                                         </Button>
                                         <Button variant="outline" className="w-12 h-6 cursor-pointer"
                                                 onClick={() => setList(list.map((item, idx) => idx !== index ? item : {
                                                     coinType: item.coinType,
-                                                    value: (amount / 2).toString()
+                                                    value: (amount / 2 / decimals).toString()
                                                 }))}>
                                             1/2
                                         </Button>
                                         <Button variant="outline" className="w-12 h-6 cursor-pointer"
                                                 onClick={() => setList(list.map((item, idx) => idx !== index ? item : {
                                                     coinType: item.coinType,
-                                                    value: amount.toString()
+                                                    value: (amount / decimals).toString()
                                                 }))}>
                                             Max
                                         </Button>
