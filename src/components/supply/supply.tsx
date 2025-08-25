@@ -10,9 +10,9 @@ export default function Supply() {
     return (
         <ScrollArea className="w-full h-full p-1">
             <SupplyCard title={naviSupply.title} supplyCoins={naviSupply.coins} />
-            <SupplyCard title={naviSupply.title} supplyCoins={naviSupply.coins} />
-            <SupplyCard title={naviSupply.title} supplyCoins={naviSupply.coins} />
-            <SupplyCard title={naviSupply.title} supplyCoins={naviSupply.coins} />
+            {/*<SupplyCard title={naviSupply.title} supplyCoins={naviSupply.coins} />*/}
+            {/*<SupplyCard title={naviSupply.title} supplyCoins={naviSupply.coins} />*/}
+            {/*<SupplyCard title={naviSupply.title} supplyCoins={naviSupply.coins} />*/}
         </ScrollArea>
     );
 }

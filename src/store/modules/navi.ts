@@ -32,40 +32,7 @@ type initialStateType = {
 
 const initialState: initialStateType = {
     title: "NAVI Protocol",
-    coins: [
-        {
-            coinType: "coinType1",
-            name: "Sui",
-            src: "/sui.png",
-            alt: "sui logo",
-            fallback: "Sui",
-            apr: 3.8
-        },
-        {
-            coinType: "coinType2",
-            name: "NAVX",
-            src: "/navx.png",
-            alt: "navx logo",
-            fallback: "Navx",
-            apr: 44.44
-        },
-        {
-            coinType: "coinType3",
-            name: "SCALLOP",
-            src: "/scallop.png",
-            alt: "scallop logo",
-            fallback: "Scallop",
-            apr: 0.36
-        },
-        {
-            coinType: "coinType4",
-            name: "BUCK",
-            src: "/buck.png",
-            alt: "buck logo",
-            fallback: "Buck",
-            apr: 10.6
-        }
-    ],
+    coins: [],
     withdrawCoins: [
         {
             coinType: "coinType1",
