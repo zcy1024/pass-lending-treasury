@@ -72,7 +72,7 @@ export default function TransferCard() {
             coinTypes: validList.map(item => item.coinType),
             names: matchedCoinIndex.map(idx => coins[idx].name),
             decimals: matchedCoinIndex.map(idx => coins[idx].decimals),
-            values: validList.map(item => Number(item.value)),
+            values: validList.map((item, idx) => Number(item.value) * coins[matchedCoinIndex[idx]].decimals),
             receipt
         } as transferType])));
         if (!isValid) {
