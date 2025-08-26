@@ -40,6 +40,7 @@ type itemType = {
 export default function TransferCard() {
     const dispatch = useDispatch<AppDispatch>();
     const coins = useAppSelector(state => state.info.realCoins);
+    const account = useAppSelector(state => state.info.address);
     const regionCoins = useAppSelector(state => state.info.coins);
     const transactions = useAppSelector(state => state.tx.transactions);
 
@@ -63,7 +64,7 @@ export default function TransferCard() {
     const addTransactions = () => {
         const validList = list.filter(item => item.coinType && item.value && Number(item.value) > 0);
         const matchedCoinIndex = validList.map(item => coins.findIndex(coin => coin.coinType === item.coinType));
-        if (validList.length === 0 || matchedCoinIndex.find(index => index === -1)) {
+        if (validList.length === 0 || matchedCoinIndex.find(index => index === -1) || receipt === account) {
             setIsValid(false);
             return;
         }
