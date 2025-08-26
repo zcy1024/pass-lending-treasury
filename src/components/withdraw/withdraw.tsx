@@ -10,10 +10,10 @@ export default function Withdraw() {
     return (
         <ScrollArea className="w-full h-full p-1">
             <WithdrawCard title={naviWithdraw.title} withdrawCoins={naviWithdraw.withdrawCoins} rewardCoins={naviWithdraw.rewardCoins} />
-            <WithdrawCard title={naviWithdraw.title} withdrawCoins={naviWithdraw.withdrawCoins} rewardCoins={naviWithdraw.rewardCoins} />
-            <WithdrawCard title={naviWithdraw.title} withdrawCoins={naviWithdraw.withdrawCoins} rewardCoins={naviWithdraw.rewardCoins} />
-            <WithdrawCard title={naviWithdraw.title} withdrawCoins={naviWithdraw.withdrawCoins} rewardCoins={naviWithdraw.rewardCoins} />
-            <WithdrawCard title={naviWithdraw.title} withdrawCoins={naviWithdraw.withdrawCoins} rewardCoins={naviWithdraw.rewardCoins} />
+            {/*<WithdrawCard title={naviWithdraw.title} withdrawCoins={naviWithdraw.withdrawCoins} rewardCoins={naviWithdraw.rewardCoins} />*/}
+            {/*<WithdrawCard title={naviWithdraw.title} withdrawCoins={naviWithdraw.withdrawCoins} rewardCoins={naviWithdraw.rewardCoins} />*/}
+            {/*<WithdrawCard title={naviWithdraw.title} withdrawCoins={naviWithdraw.withdrawCoins} rewardCoins={naviWithdraw.rewardCoins} />*/}
+            {/*<WithdrawCard title={naviWithdraw.title} withdrawCoins={naviWithdraw.withdrawCoins} rewardCoins={naviWithdraw.rewardCoins} />*/}
         </ScrollArea>
     );
 }

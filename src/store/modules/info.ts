@@ -5,8 +5,8 @@ import { Dispatch } from "react";
 import { randomTwentyFive } from "@/lib/utils";
 import { getPasskeyKeypair } from "@/configs/passkey";
 import { getCoins } from "@/lib/coinInfo";
-import { getNaviSupplyCoins } from "@/lib/navi";
-import { setNaviSupplyCoins } from "@/store/modules/navi";
+import { getNaviLendingState, getNaviSupplyCoins } from "@/lib/navi";
+import { setNaviSupplyCoins, setNaviWithdrawCoins } from "@/store/modules/navi";
 
 export type coinType = {
     coinType: string,
@@ -99,6 +99,7 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
             dispatch(setNewCoins([]));
             dispatch(setCoins(await getCoins(address)));
             dispatch(setNaviSupplyCoins(await getNaviSupplyCoins()));
+            dispatch(setNaviWithdrawCoins(await getNaviLendingState(address)));
             return;
         }
         dispatch(setAddress(""));

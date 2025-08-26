@@ -51,7 +51,7 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                     <div key={index} className="flex justify-between items-center px-10 m-1">
                         <h4 className="font-bold">{coin.name}</h4>
                         <div className="flex gap-10 items-center">
-                            <span className="text-xs text-[#afb3b5]">Supplied: {coin.supplied}</span>
+                            <span className="text-xs text-[#afb3b5]">Supplied: {(coin.supplied / decimals).toFixed(2)}</span>
                             <div className="flex gap-2 items-center">
                                 <Input className="h-full" type="number" placeholder="Withdraw Coin Value"
                                        value={getWithdrawAmount(coin.coinType)}
