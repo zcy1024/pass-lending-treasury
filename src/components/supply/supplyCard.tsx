@@ -82,8 +82,8 @@ export default function SupplyCard({title, supplyCoins}: {
                     </div>
                 );
             })}
-            <div className="flex flex-row-reverse px-10 mt-2">
-                <Button className="cursor-pointer">Supply</Button>
+            <div className="flex flex-row-reverse px-5 mt-2">
+                <Button className="w-36 h-8 cursor-pointer font-sans">Supply</Button>
             </div>
             <hr className="my-5" />
         </div>
