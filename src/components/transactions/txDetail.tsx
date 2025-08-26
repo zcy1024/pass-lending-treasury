@@ -4,13 +4,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import { transferType, typeToInfo, updateNewCoins, updateTransactionsInfo } from "@/store/modules/tx";
+import {
+    isTransferType,
+    supplyToNaviType,
+    transferType,
+    typeToInfo,
+    updateNewCoins,
+    updateTransactionsInfo
+} from "@/store/modules/tx";
 import { useAppSelector, AppDispatch } from "@/store";
 import { useDispatch } from "react-redux";
 import { Dispatch, SetStateAction } from "react";
 
 export default function TxDetail({transaction, index, setOpenAction}: {
-    transaction: transferType,
+    transaction: transferType | supplyToNaviType,
     index: number,
     setOpenAction: Dispatch<SetStateAction<boolean>>
 }) {
@@ -26,10 +33,12 @@ export default function TxDetail({transaction, index, setOpenAction}: {
                         <AvatarImage src={typeToInfo.get(transaction.type)!.src} alt={typeToInfo.get(transaction.type)!.alt} />
                         <AvatarFallback>{typeToInfo.get(transaction.type)!.fallback}</AvatarFallback>
                     </Avatar>
-                    <span className="font-bold text-lg">{transaction.type}</span>
+                    <span className="font-bold text-lg">
+                        {transaction.type === "transfer" ? transaction.type : (transaction.type.match("supply") ? "supply" : "withdraw")}
+                    </span>
                 </div>
                 {
-                    transaction.type === "transfer" &&
+                    isTransferType(transaction) &&
                     <span className="font-sans text-xs text-[#afb3b5] -mt-1">To: {transaction.receipt.slice(0, 6) + "..." + transaction.receipt.slice(-4)}</span>
                 }
                 <div className="w-full h-1"></div>

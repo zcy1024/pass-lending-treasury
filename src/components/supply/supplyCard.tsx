@@ -4,19 +4,26 @@ import { supplyCoinType } from "@/store/modules/navi";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useAppSelector } from "@/store";
+import { AppDispatch, useAppSelector } from "@/store";
 import { useState } from "react";
 import { Check } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { supplyToNaviType, updateTransactionsInfo } from "@/store/modules/tx";
 
 export default function SupplyCard({title, supplyCoins}: {
     title: string,
     supplyCoins: supplyCoinType[]
 }) {
+    const dispatch = useDispatch<AppDispatch>();
     const coins = useAppSelector(state => state.info.realCoins);
+    const regionCoins = useAppSelector(state => state.info.coins);
+    const transactions = useAppSelector(state => state.tx.transactions);
+
     const [supplyInfos, setSupplyInfos] = useState<{
         coinType: string,
         amount: string
     }[]>([]);
+    const [isValid, setIsValid] = useState<boolean>(true);
 
     const getSupplyAmount = (type: string) => {
         const index = supplyInfos.findIndex(info => info.coinType === type);
@@ -37,6 +44,28 @@ export default function SupplyCard({title, supplyCoins}: {
         const input = getSupplyAmount(type);
         const index = coins.findIndex(coin => coin.coinType === type);
         return !input || index === -1 || Number(input) === 0 || Number(input) * coins[index].decimals > coins[index].value;
+    }
+
+    const addTransaction = () => {
+        const validList = supplyInfos.filter(item => !isInvalidSupplyAmount(item.coinType));
+        const matchedCoinIndex = validList.map(item => coins.findIndex(coin => coin.coinType === item.coinType));
+        if (validList.length === 0 || matchedCoinIndex.find(index => index === -1)) {
+            setIsValid(false);
+            return;
+        }
+        const isValid = dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
+            type: "supplyToNavi",
+            coinTypes: validList.map(item => item.coinType),
+            names: matchedCoinIndex.map(idx => coins[idx].name),
+            decimals: matchedCoinIndex.map(idx => coins[idx].decimals),
+            values: validList.map((item, idx) => Number(item.amount) * coins[matchedCoinIndex[idx]].decimals)
+        } as supplyToNaviType])));
+        if (!isValid) {
+            setIsValid(false);
+            return;
+        }
+        setSupplyInfos([]);
+        setIsValid(true);
     }
 
     return (
@@ -82,8 +111,13 @@ export default function SupplyCard({title, supplyCoins}: {
                     </div>
                 );
             })}
-            <div className="flex flex-row-reverse px-5 mt-2">
-                <Button className="w-36 h-8 cursor-pointer font-sans">Supply</Button>
+            <div className="flex flex-row-reverse gap-3 items-center px-5 mt-2">
+                <Button className="w-36 h-8 cursor-pointer font-sans"
+                        disabled={!supplyCoins.find(coin => !isInvalidSupplyAmount(coin.coinType))}
+                        onClick={addTransaction}>
+                    Supply
+                </Button>
+                <span className="text-xs font-sans text-red-600">{isValid ? "" : "error supply"}</span>
             </div>
             <hr className="my-5" />
         </div>

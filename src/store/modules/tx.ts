@@ -13,7 +13,23 @@ export type transferType = {
     receipt: string
 }
 
-export type transactionType = (transferType)[];
+export type supplyToNaviType = {
+    type: string,
+    coinTypes: string[],
+    names: string[],
+    decimals: number[],
+    values: number[]
+}
+
+export type transactionType = (transferType | supplyToNaviType)[];
+
+function isTransferType(type: transferType | supplyToNaviType): type is transferType {
+    return type.type === "transfer";
+}
+
+function isSupplyToNaviType(type: transferType | supplyToNaviType): type is supplyToNaviType {
+    return type.type === "supplyToNavi";
+}
 
 export const typeToInfo = new Map<string, {
     src: string,
@@ -24,7 +40,12 @@ typeToInfo.set("transfer", {
     src: "/sui.png",
     alt: "sui logo",
     fallback: "Sui"
-})
+});
+typeToInfo.set("supplyToNavi", {
+    src: "/navx.png",
+    alt: "navi logo",
+    fallback: "Navi"
+});
 
 type initialStateType = {
     transactions: transactionType
@@ -47,7 +68,7 @@ const txStore = createSlice({
 const updateNewCoins = (coins: coinType[], transactions: transactionType): [boolean, coinType[]] => {
     try {
         transactions.forEach(transaction => {
-            if (transaction.type === "transfer") {
+            if (isTransferType(transaction) || isSupplyToNaviType(transaction)) {
                 transaction.coinTypes.forEach((type, index) => {
                     const value = transaction.values[index];
                     const coinIndex = coins.findIndex(coin => coin.coinType === type);
@@ -92,7 +113,9 @@ export {
 
 export {
     updateNewCoins,
-    updateTransactionsInfo
+    updateTransactionsInfo,
+    isTransferType,
+    isSupplyToNaviType
 };
 
 export default txStore.reducer;

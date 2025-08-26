@@ -1,7 +1,8 @@
-import { transactionType } from "@/store/modules/tx";
+import { isSupplyToNaviType, isTransferType, transactionType } from "@/store/modules/tx";
 import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
 import assembleTransfer from "@/lib/ptb/assembleTransfer";
 import { suiClient } from "@/configs/networkConfig";
+import assembleSupplyToNavi from "@/lib/ptb/assembleSupplyToNavi";
 
 async function dryRun(tx: Transaction, sender: string): Promise<[boolean, number]> {
     const res = await suiClient.devInspectTransactionBlock({
@@ -15,10 +16,12 @@ async function dryRun(tx: Transaction, sender: string): Promise<[boolean, number
 
 export default async function assemblePTB(transactions: transactionType, sender: string): Promise<[Transaction, boolean]> {
     const tx = new Transaction();
-    transactions.forEach(transaction => {
-        if (transaction.type === "transfer")
+    for (const transaction of transactions) {
+        if (isTransferType(transaction))
             assembleTransfer(tx, transaction);
-    });
+        else if (isSupplyToNaviType(transaction))
+            await assembleSupplyToNavi(tx, transaction);
+    }
     const [success, gas] = await dryRun(tx, sender);
     // An additional fee of one thousandth
     tx.transferObjects([coinWithBalance({
