@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/store";
 import { useState } from "react";
+import { Check } from "lucide-react";
 
 export default function SupplyCard({title, supplyCoins}: {
     title: string,
@@ -35,7 +36,7 @@ export default function SupplyCard({title, supplyCoins}: {
     const isInvalidSupplyAmount = (type: string) => {
         const input = getSupplyAmount(type);
         const index = coins.findIndex(coin => coin.coinType === type);
-        return !input || index === -1 || Number(input) === 0 || Number(input) > coins[index].value;
+        return !input || index === -1 || Number(input) === 0 || Number(input) * coins[index].decimals > coins[index].value;
     }
 
     return (
@@ -74,15 +75,16 @@ export default function SupplyCard({title, supplyCoins}: {
                                         onClick={() => updateSupplyInfo(coin.coinType, (ownedCoinValue / decimals).toString())}>
                                     Max
                                 </Button>
-                                <Button className="w-16 h-6 cursor-pointer font-sans"
-                                        disabled={isInvalidSupplyAmount(coin.coinType)}>
-                                    Add
-                                </Button>
+                                <Check color="green" size={36}
+                                       className={"transition-opacity " + (isInvalidSupplyAmount(coin.coinType) ? "opacity-0" : "opacity-100")} />
                             </div>
                         </div>
                     </div>
                 );
             })}
+            <div className="flex flex-row-reverse px-10 mt-3">
+                <Button className="cursor-pointer">Supply</Button>
+            </div>
             <hr className="my-5" />
         </div>
     );
