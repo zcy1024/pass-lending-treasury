@@ -155,28 +155,28 @@ const updateNewCoins = (coins: coinType[], transactions: transactionType): [bool
                     }
                 });
             }
-            if (isClaimFromNaviType(transaction)) {
-                transaction.coinTypes.forEach((type, index) => {
-                    const value = transaction.values[index];
-                    const coinIndex = coins.findIndex(coin => coin.coinType === type);
-                    if (coinIndex === -1) {
-                        if (value !== 0)
-                            coins.push({
-                                coinType: type,
-                                name: transaction.names[index],
-                                decimals: transaction.decimals[index],
-                                value: value * transaction.decimals[index]
-                            });
-                    } else {
-                        coins[coinIndex] = {
-                            coinType: coins[coinIndex].coinType,
-                            name: coins[coinIndex].name,
-                            decimals: coins[coinIndex].decimals,
-                            value: coins[coinIndex].value + value * coins[coinIndex].decimals
-                        };
-                    }
-                });
-            }
+            // if (isClaimFromNaviType(transaction)) {
+            //     transaction.coinTypes.forEach((type, index) => {
+            //         const value = transaction.values[index];
+            //         const coinIndex = coins.findIndex(coin => coin.coinType === type);
+            //         if (coinIndex === -1) {
+            //             if (value !== 0)
+            //                 coins.push({
+            //                     coinType: type,
+            //                     name: transaction.names[index],
+            //                     decimals: transaction.decimals[index],
+            //                     value: value * transaction.decimals[index]
+            //                 });
+            //         } else {
+            //             coins[coinIndex] = {
+            //                 coinType: coins[coinIndex].coinType,
+            //                 name: coins[coinIndex].name,
+            //                 decimals: coins[coinIndex].decimals,
+            //                 value: coins[coinIndex].value + value * coins[coinIndex].decimals
+            //             };
+            //         }
+            //     });
+            // }
         });
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_) {

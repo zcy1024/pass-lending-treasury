@@ -1,9 +1,18 @@
-import { isSupplyToNaviType, isTransferType, isWithdrawFromNaviType, transactionType } from "@/store/modules/tx";
+import {
+    isClaimFromNaviAndResupplyType,
+    isClaimFromNaviType,
+    isSupplyToNaviType,
+    isTransferType,
+    isWithdrawFromNaviType,
+    transactionType
+} from "@/store/modules/tx";
 import { coinWithBalance, Transaction, TransactionResult } from "@mysten/sui/transactions";
 import assembleTransfer from "@/lib/ptb/assembleTransfer";
 import { suiClient } from "@/configs/networkConfig";
 import assembleSupplyToNavi from "@/lib/ptb/assembleSupplyToNavi";
 import assembleWithdrawFromNavi from "@/lib/ptb/assembleWithdrawFromNavi";
+import assembleClaimFromNavi from "@/lib/ptb/assembleClaimFromNavi";
+import assembleClaimFromNaviAndResupply from "@/lib/ptb/assembleClaimFromNaviAndResupply";
 
 export type extraCoinType = {
     coin: TransactionResult,
@@ -76,6 +85,10 @@ export default async function assemblePTB(transactions: transactionType, sender:
             await assembleSupplyToNavi(tx, transaction);
         else if (isWithdrawFromNaviType(transaction))
             extraCoins.push(...(await assembleWithdrawFromNavi(tx, transaction)));
+        else if (isClaimFromNaviType(transaction))
+            await assembleClaimFromNavi(tx, sender);
+        else if (isClaimFromNaviAndResupplyType(transaction))
+            await assembleClaimFromNaviAndResupply(tx, sender);
     }
     transferExtraCoins(tx, extraCoins, sender);
     const [success, gas] = await dryRun(tx, sender);
