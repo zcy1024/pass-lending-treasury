@@ -1,8 +1,21 @@
-import { isSupplyToNaviType, isTransferType, transactionType } from "@/store/modules/tx";
-import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
+import { isSupplyToNaviType, isTransferType, isWithdrawFromNaviType, transactionType } from "@/store/modules/tx";
+import { coinWithBalance, Transaction, TransactionResult } from "@mysten/sui/transactions";
 import assembleTransfer from "@/lib/ptb/assembleTransfer";
 import { suiClient } from "@/configs/networkConfig";
 import assembleSupplyToNavi from "@/lib/ptb/assembleSupplyToNavi";
+import assembleWithdrawFromNavi from "@/lib/ptb/assembleWithdrawFromNavi";
+
+export type extraCoinType = {
+    coin: TransactionResult,
+    coinType: string,
+    amount: number,
+    used: boolean
+}
+
+function transferExtraCoins(tx: Transaction, extraCoins: extraCoinType[], sender: string) {
+    const coins = extraCoins.filter(item => !item.used).map(item => item.coin);
+    tx.transferObjects(coins, tx.pure.address(sender));
+}
 
 async function dryRun(tx: Transaction, sender: string): Promise<[boolean, number]> {
     const res = await suiClient.devInspectTransactionBlock({
@@ -16,12 +29,16 @@ async function dryRun(tx: Transaction, sender: string): Promise<[boolean, number
 
 export default async function assemblePTB(transactions: transactionType, sender: string): Promise<[Transaction, boolean]> {
     const tx = new Transaction();
+    const extraCoins: extraCoinType[] = [];
     for (const transaction of transactions) {
         if (isTransferType(transaction))
             assembleTransfer(tx, transaction);
         else if (isSupplyToNaviType(transaction))
             await assembleSupplyToNavi(tx, transaction);
+        else if (isWithdrawFromNaviType(transaction))
+            extraCoins.push(...(await assembleWithdrawFromNavi(tx, transaction)));
     }
+    transferExtraCoins(tx, extraCoins, sender);
     const [success, gas] = await dryRun(tx, sender);
     // An additional fee of one thousandth
     tx.transferObjects([coinWithBalance({
