@@ -23,6 +23,9 @@ export type withdrawCoinType = {
 export type rewardCoinType = {
     coinType: string,
     name: string,
+    src: string,
+    alt: string,
+    fallback: string,
     reward: number
 }
 
@@ -37,28 +40,7 @@ const initialState: initialStateType = {
     title: "NAVI Protocol",
     coins: [],
     withdrawCoins: [],
-    rewardCoins: [
-        {
-            coinType: "coinType1",
-            name: "Sui",
-            reward: 1000000000
-        },
-        {
-            coinType: "coinType2",
-            name: "NAVX",
-            reward: 987654
-        },
-        {
-            coinType: "coinType3",
-            name: "SCALLOP",
-            reward: 126498
-        },
-        {
-            coinType: "coinType4",
-            name: "BUCK",
-            reward: 6549751
-        }
-    ]
+    rewardCoins: []
 }
 
 const naviStore = createSlice({
@@ -70,6 +52,9 @@ const naviStore = createSlice({
         },
         setNaviWithdrawCoins(state, action: { payload: withdrawCoinType[] }) {
             state.withdrawCoins = action.payload;
+        },
+        setNaviRewardCoins(state, action:{ payload: rewardCoinType[] }) {
+            state.rewardCoins = action.payload;
         }
     }
 });
@@ -77,11 +62,13 @@ const naviStore = createSlice({
 const {
     setNaviSupplyCoins,
     setNaviWithdrawCoins,
+    setNaviRewardCoins
 } = naviStore.actions;
 
 export {
     setNaviSupplyCoins,
     setNaviWithdrawCoins,
+    setNaviRewardCoins
 }
 
 export default naviStore.reducer;

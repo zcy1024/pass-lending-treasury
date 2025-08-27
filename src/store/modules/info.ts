@@ -6,7 +6,8 @@ import { randomTwentyFive } from "@/lib/utils";
 import { getPasskeyKeypair } from "@/configs/passkey";
 import { getCoins } from "@/lib/coinInfo";
 import { getNaviLendingState, getNaviSupplyCoins } from "@/lib/navi";
-import { setNaviSupplyCoins, setNaviWithdrawCoins } from "@/store/modules/navi";
+import { setNaviRewardCoins, setNaviSupplyCoins, setNaviWithdrawCoins } from "@/store/modules/navi";
+import getNaviLendingRewards from "@/lib/navi/getNaviLendingRewards";
 
 export type coinType = {
     coinType: string,
@@ -100,12 +101,16 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
             dispatch(setCoins(await getCoins(address)));
             dispatch(setNaviSupplyCoins(await getNaviSupplyCoins()));
             dispatch(setNaviWithdrawCoins(await getNaviLendingState(address)));
+            dispatch(setNaviRewardCoins(await getNaviLendingRewards(address)));
             return;
         }
         dispatch(setAddress(""));
         dispatch(setPublicKeyArray([]));
         dispatch(setNewCoins([]));
         dispatch(setCoins([]));
+        dispatch(setNaviSupplyCoins([]));
+        dispatch(setNaviWithdrawCoins([]));
+        dispatch(setNaviRewardCoins([]));
     }
 }
 
