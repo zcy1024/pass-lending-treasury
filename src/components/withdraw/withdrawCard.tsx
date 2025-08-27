@@ -4,7 +4,7 @@ import { rewardCoinType, withdrawCoinType } from "@/store/modules/navi";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RewardsDetail } from "@/components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppDispatch, useAppSelector } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Check } from "lucide-react";
@@ -20,6 +20,20 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
     const coins = useAppSelector(state => state.info.realCoins);
     const regionCoins = useAppSelector(state => state.info.coins);
     const transactions = useAppSelector(state => state.tx.transactions);
+
+    const [supplied, setSupplied] = useState<number[]>([]);
+    useEffect(() => {
+        setSupplied(withdrawCoins.map(coin => {
+            let value = 0;
+            const keyword = title === "NAVI Protocol" ? "Navi" : "Scallop";
+            const withdraw = transactions.filter(transaction => transaction.type === `withdrawFrom${keyword}`);
+            withdraw.forEach(tx => tx.coinTypes.forEach((type, index) => {
+                if (type === coin.coinType)
+                    value += tx.values[index];
+            }));
+            return coin.supplied - value;
+        }));
+    }, [withdrawCoins, title, transactions]);
 
     const [withdrawInfos, setWithdrawInfos] = useState<{
         coinType: string,
@@ -46,7 +60,7 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
         const input = getWithdrawAmount(type);
         const index = withdrawCoins.findIndex(coin => coin.coinType === type);
         const coinIndex = coins.findIndex(coin => coin.coinType === type);
-        return !input || index === -1 || Number(input) === 0 || Number(input) * coins[coinIndex].decimals > withdrawCoins[index].supplied;
+        return !input || index === -1 || Number(input) === 0 || Number(input) * coins[coinIndex].decimals > supplied[index];
     }
 
     const addTransaction = async () => {
@@ -89,21 +103,21 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                             <h4 className="font-bold">{coin.name}</h4>
                         </div>
                         <div className="flex gap-10 items-center">
-                            <span className="text-xs text-[#afb3b5]">Supplied: {(coin.supplied / decimals).toFixed(2)}</span>
+                            <span className="text-xs text-[#afb3b5]">Supplied: {(supplied[index] / decimals).toFixed(2)}</span>
                             <div className="flex gap-2 items-center">
                                 <Input className="h-full" type="number" placeholder="Withdraw Coin Value"
                                        value={getWithdrawAmount(coin.coinType)}
                                        onChange={e => updateWithdrawInfo(coin.coinType, e.target.value)} />
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateWithdrawInfo(coin.coinType, (coin.supplied / 4 / decimals).toString())}>
+                                        onClick={() => updateWithdrawInfo(coin.coinType, (supplied[index] / 4 / decimals).toString())}>
                                     1/4
                                 </Button>
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateWithdrawInfo(coin.coinType, (coin.supplied / 2 / decimals).toString())}>
+                                        onClick={() => updateWithdrawInfo(coin.coinType, (supplied[index] / 2 / decimals).toString())}>
                                     1/2
                                 </Button>
                                 <Button className="w-16 h-6 cursor-pointer font-sans" variant="outline"
-                                        onClick={() => updateWithdrawInfo(coin.coinType, (coin.supplied / decimals).toString())}>
+                                        onClick={() => updateWithdrawInfo(coin.coinType, (supplied[index] / decimals).toString())}>
                                     Max
                                 </Button>
                                 <Check color="green" size={36}
