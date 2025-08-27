@@ -27,7 +27,7 @@
         "@eslint/eslintrc": "^3.3.1",
         "@mysten/dapp-kit": "^0.17.5",
         "@mysten/sui": "^1.37.4",
-        "@naviprotocol/lending": "^1.0.5",
+        "@naviprotocol/lending": "^1.0.6",
         "@reduxjs/toolkit": "^2.8.2",
         "@tailwindcss/postcss": "^4.1.12",
         "@tanstack/react-query": "^5.85.5",
@@ -177,7 +177,7 @@
 
     "@napi-rs/wasm-runtime": ["@napi-rs/wasm-runtime@0.2.12", "", { "dependencies": { "@emnapi/core": "^1.4.3", "@emnapi/runtime": "^1.4.3", "@tybys/wasm-util": "^0.10.0" } }, "sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ=="],
 
-    "@naviprotocol/lending": ["@naviprotocol/lending@1.0.5", "", { "dependencies": { "@mysten/bcs": "^1.6.3", "@mysten/sui": "1.34.0", "@pythnetwork/pyth-sui-js": "^2.0.0", "bignumber.js": "9.1.2", "lodash.camelcase": "^4.3.0" } }, "sha512-kPPZY7xQn5IM6LTPSNBQz/x6Gkn2a3IBHL7LvSx+Y2815K9TsWpUN6YbQDAvzI1liDmyZa2fE/kc+YA6y/Ss3Q=="],
+    "@naviprotocol/lending": ["@naviprotocol/lending@1.0.6", "", { "dependencies": { "@mysten/bcs": "^1.6.3", "@mysten/sui": "1.34.0", "@pythnetwork/pyth-sui-js": "^2.0.0", "bignumber.js": "9.1.2", "lodash.camelcase": "^4.3.0" } }, "sha512-i1LflFtmoDDF2y+4r9S1x0KfNz5u4bJRVROKKSBiHw7yGkYwoIFIv2XrkrTXp8RBk16qeuVm7eojJI+Zjxg0gQ=="],
 
     "@next/env": ["@next/env@15.4.6", "", {}, "sha512-yHDKVTcHrZy/8TWhj0B23ylKv5ypocuCwey9ZqPyv4rPdUdRzpGCkSi03t04KBPyU96kxVtUqx6O3nE1kpxASQ=="],
 
