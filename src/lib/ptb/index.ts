@@ -12,9 +12,49 @@ export type extraCoinType = {
     used: boolean
 }
 
+const extraCoins: extraCoinType[] = [];
+
+export function getCoin(tx: Transaction, type: string, amount: number) {
+    if (extraCoins.filter(item => !item.used && item.coinType === type).length === 0)
+        return coinWithBalance({
+            type,
+            balance: amount,
+            useGasCoin: type === "0x2::sui::SUI"
+        });
+    let need = amount;
+    const desCoin = coinWithBalance({
+        type,
+        balance: 0
+    });
+    for (const i in extraCoins) {
+        const coin = extraCoins[i];
+        if (coin.used || coin.coinType !== type)
+            continue;
+        if (need >= coin.amount) {
+            tx.mergeCoins(desCoin, [coin.coin]);
+            coin.used = true;
+            need -= coin.amount;
+        } else {
+            tx.mergeCoins(desCoin, tx.splitCoins(coin.coin, [need]));
+            coin.amount -= need;
+            need = 0;
+        }
+        if (need === 0)
+            break;
+    }
+    if (need > 0)
+        tx.mergeCoins(desCoin, [coinWithBalance({
+            type,
+            balance: need,
+            useGasCoin: type === "0x2::sui::SUI"
+        })]);
+    return desCoin;
+}
+
 function transferExtraCoins(tx: Transaction, extraCoins: extraCoinType[], sender: string) {
     const coins = extraCoins.filter(item => !item.used).map(item => item.coin);
-    tx.transferObjects(coins, tx.pure.address(sender));
+    if (coins.length > 0)
+        tx.transferObjects(coins, tx.pure.address(sender));
 }
 
 async function dryRun(tx: Transaction, sender: string): Promise<[boolean, number]> {
@@ -29,7 +69,6 @@ async function dryRun(tx: Transaction, sender: string): Promise<[boolean, number
 
 export default async function assemblePTB(transactions: transactionType, sender: string): Promise<[Transaction, boolean]> {
     const tx = new Transaction();
-    const extraCoins: extraCoinType[] = [];
     for (const transaction of transactions) {
         if (isTransferType(transaction))
             assembleTransfer(tx, transaction);
