@@ -10,14 +10,14 @@ import {
     transferType,
     typeToInfo,
     updateNewCoins,
-    updateTransactionsInfo
+    updateTransactionsInfo, withdrawFromNaviType
 } from "@/store/modules/tx";
 import { useAppSelector, AppDispatch } from "@/store";
 import { useDispatch } from "react-redux";
 import { Dispatch, SetStateAction } from "react";
 
 export default function TxDetail({transaction, index, setOpenAction}: {
-    transaction: transferType | supplyToNaviType,
+    transaction: transferType | supplyToNaviType | withdrawFromNaviType,
     index: number,
     setOpenAction: Dispatch<SetStateAction<boolean>>
 }) {

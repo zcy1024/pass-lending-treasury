@@ -21,14 +21,26 @@ export type supplyToNaviType = {
     values: number[]
 }
 
-export type transactionType = (transferType | supplyToNaviType)[];
+export type withdrawFromNaviType = {
+    type: string,
+    coinTypes: string[],
+    names: string[],
+    decimals: number[],
+    values: number[]
+}
 
-function isTransferType(type: transferType | supplyToNaviType): type is transferType {
+export type transactionType = (transferType | supplyToNaviType | withdrawFromNaviType)[];
+
+function isTransferType(type: transferType | supplyToNaviType | withdrawFromNaviType): type is transferType {
     return type.type === "transfer";
 }
 
-function isSupplyToNaviType(type: transferType | supplyToNaviType): type is supplyToNaviType {
+function isSupplyToNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType): type is supplyToNaviType {
     return type.type === "supplyToNavi";
+}
+
+function isWithdrawFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType): type is withdrawFromNaviType {
+    return type.type === "withdrawFromNavi";
 }
 
 export const typeToInfo = new Map<string, {
@@ -42,6 +54,11 @@ typeToInfo.set("transfer", {
     fallback: "Sui"
 });
 typeToInfo.set("supplyToNavi", {
+    src: "/navx.png",
+    alt: "navi logo",
+    fallback: "Navi"
+});
+typeToInfo.set("withdrawFromNavi", {
     src: "/navx.png",
     alt: "navi logo",
     fallback: "Navi"
@@ -82,6 +99,20 @@ const updateNewCoins = (coins: coinType[], transactions: transactionType): [bool
                     };
                 });
             }
+            if (isWithdrawFromNaviType(transaction)) {
+                transaction.coinTypes.forEach((type, index) => {
+                    const value = transaction.values[index];
+                    const coinIndex = coins.findIndex(coin => coin.coinType === type);
+                    if (coinIndex === -1)
+                        throw Error();
+                    coins[coinIndex] = {
+                        coinType: coins[coinIndex].coinType,
+                        name: coins[coinIndex].name,
+                        decimals: coins[coinIndex].decimals,
+                        value: coins[coinIndex].value + value
+                    };
+                });
+            }
         });
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_) {
@@ -115,7 +146,8 @@ export {
     updateNewCoins,
     updateTransactionsInfo,
     isTransferType,
-    isSupplyToNaviType
+    isSupplyToNaviType,
+    isWithdrawFromNaviType,
 };
 
 export default txStore.reducer;

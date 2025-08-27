@@ -5,16 +5,22 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RewardsDetail } from "@/components";
 import { useState } from "react";
-import { useAppSelector } from "@/store";
+import { AppDispatch, useAppSelector } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Check } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { updateTransactionsInfo, withdrawFromNaviType } from "@/store/modules/tx";
 
 export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
     title: string,
     withdrawCoins: withdrawCoinType[],
     rewardCoins: rewardCoinType[],
 }) {
+    const dispatch = useDispatch<AppDispatch>();
     const coins = useAppSelector(state => state.info.realCoins);
+    const regionCoins = useAppSelector(state => state.info.coins);
+    const transactions = useAppSelector(state => state.tx.transactions);
+
     const [withdrawInfos, setWithdrawInfos] = useState<{
         coinType: string,
         amount: string
@@ -44,7 +50,25 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
     }
 
     const addTransaction = async () => {
-        console.log("withdraw");
+        const validList = withdrawInfos.filter(item => !isInvalidWithdrawAmount(item.coinType));
+        const matchedCoinIndex = validList.map(item => coins.findIndex(coin => coin.coinType === item.coinType));
+        if (validList.length === 0 || matchedCoinIndex.find(index => index === -1)) {
+            setIsValid(false);
+            return;
+        }
+        const isValid = dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
+            type: "withdrawFromNavi",
+            coinTypes: validList.map(item => item.coinType),
+            names: matchedCoinIndex.map(idx => coins[idx].name),
+            decimals: matchedCoinIndex.map(idx => coins[idx].decimals),
+            values: validList.map((item, idx) => Number(item.amount) * coins[matchedCoinIndex[idx]].decimals)
+        } as withdrawFromNaviType])));
+        if (!isValid) {
+            setIsValid(false);
+            return;
+        }
+        setWithdrawInfos([]);
+        setIsValid(true);
     }
 
     return (
