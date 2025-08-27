@@ -5,7 +5,8 @@ type poolType = {
     token: {
         coinType: string,
         logoUri: string,
-        symbol: string
+        symbol: string,
+        decimals: number
     }
 }
 
@@ -25,7 +26,8 @@ export default async function getNaviLendingRewards(address: string) {
                     src: pool.token.logoUri,
                     alt: pool.token.symbol,
                     fallback: pool.token.symbol,
-                    reward: 0
+                    reward: 0,
+                    decimals: 10 ** pool.token.decimals
                 });
             }
             ret[idx !== -1 ? idx : ret.length - 1].reward += Number(amount);

@@ -9,7 +9,12 @@ import { AppDispatch, useAppSelector } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Check } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { updateTransactionsInfo, withdrawFromNaviType } from "@/store/modules/tx";
+import {
+    claimFromNaviAndResupplyType,
+    claimFromNaviType,
+    updateTransactionsInfo,
+    withdrawFromNaviType
+} from "@/store/modules/tx";
 
 export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
     title: string,
@@ -41,6 +46,12 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
     }[]>([]);
     const [isValid, setIsValid] = useState<boolean>(true);
 
+    const [claimed, setClaimed] = useState<boolean>(false);
+    useEffect(() => {
+        const keyword = title === "NAVI Protocol" ? "Navi" : "Scallop";
+        setClaimed(transactions.find(transaction => transaction.type === `claimFrom${keyword}` || transaction.type === `claimFrom${keyword}AndResupply`) !== undefined);
+    }, [title, transactions]);
+
     const getWithdrawAmount = (type: string) => {
         const index = withdrawInfos.findIndex(info => info.coinType === type);
         return index === -1 ? "" : withdrawInfos[index].amount;
@@ -63,7 +74,7 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
         return !input || index === -1 || Number(input) === 0 || Number(input) * coins[coinIndex].decimals > supplied[index];
     }
 
-    const addTransaction = async () => {
+    const addTransaction = () => {
         const validList = withdrawInfos.filter(item => !isInvalidWithdrawAmount(item.coinType));
         const matchedCoinIndex = validList.map(item => coins.findIndex(coin => coin.coinType === item.coinType));
         if (validList.length === 0 || matchedCoinIndex.find(index => index === -1)) {
@@ -83,6 +94,26 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
         }
         setWithdrawInfos([]);
         setIsValid(true);
+    }
+
+    const claimRewards = () => {
+        dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
+            type: "claimFromNavi",
+            coinTypes: rewardCoins.map(item => item.coinType),
+            names: rewardCoins.map(item => item.name),
+            decimals: rewardCoins.map(item => item.decimals),
+            values: rewardCoins.map((item, index) => item.reward * rewardCoins[index].decimals)
+        } as claimFromNaviType])));
+    }
+
+    const claimRewardsAndResupply = () => {
+        dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
+            type: "claimFromNaviAndResupply",
+            coinTypes: [],
+            names: [],
+            decimals: [],
+            values: []
+        } as claimFromNaviAndResupplyType])));
     }
 
     return (
@@ -137,8 +168,16 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
             </div>
             <div className="flex gap-3 justify-end items-center px-5 mt-2">
                 <RewardsDetail title={title} rewardCoins={rewardCoins} />
-                <Button className="w-36 h-8 cursor-pointer font-sans">Claim Reward</Button>
-                <Button className="w-36 h-8 cursor-pointer font-sans">Claim And ReSupply</Button>
+                <Button className="w-36 h-8 cursor-pointer font-sans"
+                        disabled={rewardCoins.length === 0 || claimed}
+                        onClick={claimRewards}>
+                    Claim Reward
+                </Button>
+                <Button className="w-36 h-8 cursor-pointer font-sans"
+                        disabled={rewardCoins.length === 0 || claimed}
+                        onClick={claimRewardsAndResupply}>
+                    Claim And ReSupply
+                </Button>
             </div>
             <hr className="my-5" />
         </div>

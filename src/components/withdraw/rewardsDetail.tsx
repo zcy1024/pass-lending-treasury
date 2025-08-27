@@ -11,6 +11,7 @@ import {
     DialogTrigger
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function RewardsDetail({title, rewardCoins}: {
     title: string,
@@ -31,7 +32,13 @@ export default function RewardsDetail({title, rewardCoins}: {
                         {rewardCoins.map((coin, index) => {
                             return (
                                 <div key={index} className="flex justify-between items-center">
-                                    <span className="font-bold">{coin.name}</span>
+                                    <div className="flex gap-1 items-center">
+                                        <Avatar className="h-6 w-6">
+                                            <AvatarImage src={coin.src} alt={coin.alt} />
+                                            <AvatarFallback>{coin.fallback}</AvatarFallback>
+                                        </Avatar>
+                                        <h4 className="font-bold">{coin.name}</h4>
+                                    </div>
                                     <span>{coin.reward}</span>
                                 </div>
                             );

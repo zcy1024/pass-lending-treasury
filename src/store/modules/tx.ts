@@ -29,18 +29,42 @@ export type withdrawFromNaviType = {
     values: number[]
 }
 
-export type transactionType = (transferType | supplyToNaviType | withdrawFromNaviType)[];
+export type claimFromNaviType = {
+    type: string,
+    coinTypes: string[],
+    names: string[],
+    decimals: number[],
+    values: number[]
+}
 
-function isTransferType(type: transferType | supplyToNaviType | withdrawFromNaviType): type is transferType {
+export type claimFromNaviAndResupplyType = {
+    type: string,
+    coinTypes: string[],
+    names: string[],
+    decimals: number[],
+    values: number[]
+}
+
+export type transactionType = (transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType)[];
+
+function isTransferType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType): type is transferType {
     return type.type === "transfer";
 }
 
-function isSupplyToNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType): type is supplyToNaviType {
+function isSupplyToNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType): type is supplyToNaviType {
     return type.type === "supplyToNavi";
 }
 
-function isWithdrawFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType): type is withdrawFromNaviType {
+function isWithdrawFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType): type is withdrawFromNaviType {
     return type.type === "withdrawFromNavi";
+}
+
+function isClaimFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType): type is claimFromNaviType {
+    return type.type === "claimFromNavi";
+}
+
+function isClaimFromNaviAndResupplyType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType): type is claimFromNaviAndResupplyType {
+    return type.type === "claimFromNaviAndResupply";
 }
 
 export const typeToInfo = new Map<string, {
@@ -59,6 +83,16 @@ typeToInfo.set("supplyToNavi", {
     fallback: "Navi"
 });
 typeToInfo.set("withdrawFromNavi", {
+    src: "/navx.png",
+    alt: "navi logo",
+    fallback: "Navi"
+});
+typeToInfo.set("claimFromNavi", {
+    src: "/navx.png",
+    alt: "navi logo",
+    fallback: "Navi"
+});
+typeToInfo.set("claimFromNaviAndResupply", {
     src: "/navx.png",
     alt: "navi logo",
     fallback: "Navi"
@@ -103,14 +137,44 @@ const updateNewCoins = (coins: coinType[], transactions: transactionType): [bool
                 transaction.coinTypes.forEach((type, index) => {
                     const value = transaction.values[index];
                     const coinIndex = coins.findIndex(coin => coin.coinType === type);
-                    if (coinIndex === -1)
-                        throw Error();
-                    coins[coinIndex] = {
-                        coinType: coins[coinIndex].coinType,
-                        name: coins[coinIndex].name,
-                        decimals: coins[coinIndex].decimals,
-                        value: coins[coinIndex].value + value
-                    };
+                    if (coinIndex === -1) {
+                        if (value !== 0)
+                            coins.push({
+                                coinType: type,
+                                name: transaction.names[index],
+                                decimals: transaction.decimals[index],
+                                value: value
+                            });
+                    } else {
+                        coins[coinIndex] = {
+                            coinType: coins[coinIndex].coinType,
+                            name: coins[coinIndex].name,
+                            decimals: coins[coinIndex].decimals,
+                            value: coins[coinIndex].value + value
+                        };
+                    }
+                });
+            }
+            if (isClaimFromNaviType(transaction)) {
+                transaction.coinTypes.forEach((type, index) => {
+                    const value = transaction.values[index];
+                    const coinIndex = coins.findIndex(coin => coin.coinType === type);
+                    if (coinIndex === -1) {
+                        if (value !== 0)
+                            coins.push({
+                                coinType: type,
+                                name: transaction.names[index],
+                                decimals: transaction.decimals[index],
+                                value: value * transaction.decimals[index]
+                            });
+                    } else {
+                        coins[coinIndex] = {
+                            coinType: coins[coinIndex].coinType,
+                            name: coins[coinIndex].name,
+                            decimals: coins[coinIndex].decimals,
+                            value: coins[coinIndex].value + value * coins[coinIndex].decimals
+                        };
+                    }
                 });
             }
         });
@@ -148,6 +212,8 @@ export {
     isTransferType,
     isSupplyToNaviType,
     isWithdrawFromNaviType,
+    isClaimFromNaviType,
+    isClaimFromNaviAndResupplyType
 };
 
 export default txStore.reducer;

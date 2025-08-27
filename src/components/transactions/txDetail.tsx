@@ -34,7 +34,7 @@ export default function TxDetail({transaction, index, setOpenAction}: {
                         <AvatarFallback>{typeToInfo.get(transaction.type)!.fallback}</AvatarFallback>
                     </Avatar>
                     <span className="font-bold text-lg">
-                        {transaction.type === "transfer" ? transaction.type : (transaction.type.match("supply") ? "supply" : "withdraw")}
+                        {transaction.type === "transfer" ? transaction.type : (transaction.type.match("claim") ? (transaction.type.match("Resupply") ? "resupply" : "claim") : (transaction.type.match("withdraw") ? "withdraw" : "supply"))}
                     </span>
                 </div>
                 {

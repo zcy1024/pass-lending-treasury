@@ -26,7 +26,8 @@ export type rewardCoinType = {
     src: string,
     alt: string,
     fallback: string,
-    reward: number
+    reward: number,
+    decimals: number
 }
 
 type initialStateType = {
