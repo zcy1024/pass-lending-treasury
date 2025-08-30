@@ -19,6 +19,7 @@ export default function Swap() {
         swapPanelClient.setUserAddress(address ? address : "").then();
         swapPanelClient.onSignTransaction = async (tx) => {
             const bytes = await tx.build({
+                // @ts-expect-error #private client
                 client: suiClient
             });
             const keypair = getPasskeyKeypair(window.location.hostname, new Uint8Array(publicKeyArray));
