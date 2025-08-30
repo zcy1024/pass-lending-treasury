@@ -45,26 +45,38 @@ export type claimFromNaviAndResupplyType = {
     values: number[]
 }
 
-export type transactionType = (transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType)[];
+export type supplyToScallopType = {
+    type: string,
+    coinTypes: string[],
+    names: string[],
+    decimals: number[],
+    values: number[]
+}
 
-function isTransferType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType): type is transferType {
+export type transactionType = (transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType)[];
+
+function isTransferType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType): type is transferType {
     return type.type === "transfer";
 }
 
-function isSupplyToNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType): type is supplyToNaviType {
+function isSupplyToNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType): type is supplyToNaviType {
     return type.type === "supplyToNavi";
 }
 
-function isWithdrawFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType): type is withdrawFromNaviType {
+function isWithdrawFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType): type is withdrawFromNaviType {
     return type.type === "withdrawFromNavi";
 }
 
-function isClaimFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType): type is claimFromNaviType {
+function isClaimFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType): type is claimFromNaviType {
     return type.type === "claimFromNavi";
 }
 
-function isClaimFromNaviAndResupplyType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType): type is claimFromNaviAndResupplyType {
+function isClaimFromNaviAndResupplyType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType): type is claimFromNaviAndResupplyType {
     return type.type === "claimFromNaviAndResupply";
+}
+
+function isSupplyToScallopType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType): type is supplyToScallopType {
+    return type.type === "supplyToScallop";
 }
 
 export const typeToInfo = new Map<string, {
@@ -97,6 +109,11 @@ typeToInfo.set("claimFromNaviAndResupply", {
     alt: "navi logo",
     fallback: "Navi"
 });
+typeToInfo.set("supplyToScallop", {
+    src: "/scallop.png",
+    alt: "scallop logo",
+    fallback: "Scallop"
+});
 
 type initialStateType = {
     transactions: transactionType
@@ -119,7 +136,7 @@ const txStore = createSlice({
 const updateNewCoins = (coins: coinType[], transactions: transactionType): [boolean, coinType[]] => {
     try {
         transactions.forEach(transaction => {
-            if (isTransferType(transaction) || isSupplyToNaviType(transaction)) {
+            if (isTransferType(transaction) || isSupplyToNaviType(transaction) || isSupplyToScallopType(transaction)) {
                 transaction.coinTypes.forEach((type, index) => {
                     const value = transaction.values[index];
                     const coinIndex = coins.findIndex(coin => coin.coinType === type);
@@ -213,7 +230,8 @@ export {
     isSupplyToNaviType,
     isWithdrawFromNaviType,
     isClaimFromNaviType,
-    isClaimFromNaviAndResupplyType
+    isClaimFromNaviAndResupplyType,
+    isSupplyToScallopType,
 };
 
 export default txStore.reducer;

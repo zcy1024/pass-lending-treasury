@@ -54,7 +54,7 @@ export default function SupplyCard({title, supplyCoins}: {
             return;
         }
         const isValid = dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
-            type: "supplyToNavi",
+            type: title.match("NAVI") ? "supplyToNavi" : "supplyToScallop",
             coinTypes: validList.map(item => item.coinType),
             names: matchedCoinIndex.map(idx => coins[idx].name),
             decimals: matchedCoinIndex.map(idx => coins[idx].decimals),
