@@ -8,6 +8,7 @@ import { getCoins } from "@/lib/coinInfo";
 import { getNaviLendingState, getNaviSupplyCoins } from "@/lib/navi";
 import { setNaviRewardCoins, setNaviSupplyCoins, setNaviWithdrawCoins } from "@/store/modules/navi";
 import getNaviLendingRewards from "@/lib/navi/getNaviLendingRewards";
+import { getScallopLendingState } from "@/lib/scallop";
 
 export type coinType = {
     coinType: string,
@@ -99,9 +100,17 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
             dispatch(setPublicKeyArray(Array.from(publicKeyBytes)));
             dispatch(setNewCoins([]));
             dispatch(setCoins(await getCoins(address)));
-            dispatch(setNaviSupplyCoins(await getNaviSupplyCoins()));
+            const naviLendingCoins = await getNaviSupplyCoins();
+            const coinNameAndUrl = naviLendingCoins.map(coin => {
+                return {
+                    coinType: coin.coinType,
+                    src: coin.src
+                }
+            });
+            dispatch(setNaviSupplyCoins(naviLendingCoins));
             dispatch(setNaviWithdrawCoins(await getNaviLendingState(address)));
             dispatch(setNaviRewardCoins(await getNaviLendingRewards(address)));
+            console.log(await getScallopLendingState(coinNameAndUrl));
             return;
         }
         dispatch(setAddress(""));
