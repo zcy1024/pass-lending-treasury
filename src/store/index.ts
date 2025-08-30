@@ -5,12 +5,14 @@ import { TypedUseSelectorHook, useSelector } from "react-redux";
 import infoReducer from "@/store/modules/info";
 import txReducer from "@/store/modules/tx";
 import naviReducer from "@/store/modules/navi";
+import scallopReducer from "@/store/modules/scallop";
 
 const store = configureStore({
     reducer: {
         info: infoReducer,
         tx: txReducer,
-        navi: naviReducer
+        navi: naviReducer,
+        scallop: scallopReducer,
     }
 });
 

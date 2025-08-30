@@ -28,7 +28,7 @@ export default async function getScallopLendingState(coinNameAndUrl: {
             src: nameToUrl ? nameToUrl.src : await getUrlInMetadata(pool.coinType),
             alt: pool.symbol,
             fallback: pool.symbol,
-            apr: Number(pool.supplyApr) * 100
+            apr: Math.round(Number(pool.supplyApr) * 10000) / 100
         });
     }
     return ret;
