@@ -152,7 +152,7 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                             <h4 className="font-bold">{coin.name}</h4>
                         </div>
                         <div className="flex gap-10 items-center">
-                            <span className="text-xs text-[#afb3b5]">Supplied: {(supplied[index] / decimals).toFixed(2)}</span>
+                            <span className="text-xs text-[#afb3b5]">{title.match("Scallop") ? `s${coin.name}` : "Supplied"}: {(supplied[index] / decimals).toFixed(2)}</span>
                             <div className="flex gap-2 items-center">
                                 <Input className="h-full" type="number" placeholder="Withdraw Coin Value"
                                        value={getWithdrawAmount(coin.coinType)}
