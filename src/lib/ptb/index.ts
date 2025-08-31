@@ -46,7 +46,7 @@ export function getCoin(tx: Transaction, type: string, amount: number) {
             coin.used = true;
             need -= coin.amount;
         } else {
-            tx.mergeCoins(desCoin, tx.splitCoins(coin.coin, [need]));
+            tx.mergeCoins(desCoin, [...tx.splitCoins(coin.coin, [need])]);
             coin.amount -= need;
             need = 0;
         }

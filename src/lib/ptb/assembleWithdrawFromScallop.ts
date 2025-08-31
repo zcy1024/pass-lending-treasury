@@ -35,7 +35,8 @@ export default function assembleWithdrawFromScallop(tx: Transaction, transaction
                 withdrawAmount += Math.floor(transaction.withdrawValues[j]);
             }
         extraCoins.push({
-            coin: call(tx, type, marketType, amount),
+            // @ts-expect-error Transaction Result
+            coin: call(tx, type, marketType, amount)[0],
             coinType: type,
             amount: withdrawAmount,
             used: false
