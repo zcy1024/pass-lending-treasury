@@ -3,7 +3,7 @@
 import { rewardCoinType, withdrawCoinType } from "@/store/modules/navi";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { RewardsDetail } from "@/components";
+import { RewardsDetail, ScallopRewardsDetail } from "@/components";
 import { useEffect, useState } from "react";
 import { AppDispatch, useAppSelector } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -182,6 +182,10 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                         onClick={addTransaction}>
                     Withdraw
                 </Button>
+                {
+                    title === "Scallop" &&
+                    <ScallopRewardsDetail title={title} withdrawCoins={withdrawCoins} />
+                }
                 <span className="text-xs font-sans text-red-600">{isValid ? "" : "error withdraw"}</span>
             </div>
             {
