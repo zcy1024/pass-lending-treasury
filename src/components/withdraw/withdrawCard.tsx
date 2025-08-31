@@ -13,7 +13,7 @@ import {
     claimFromNaviAndResupplyType,
     claimFromNaviType,
     updateTransactionsInfo,
-    withdrawFromNaviType
+    withdrawFromNaviType, withdrawFromScallopType
 } from "@/store/modules/tx";
 
 export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
@@ -42,7 +42,8 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
 
     const [withdrawInfos, setWithdrawInfos] = useState<{
         coinType: string,
-        amount: string
+        amount: string,
+        withdrawAmount: string
     }[]>([]);
     const [isValid, setIsValid] = useState<boolean>(true);
 
@@ -58,11 +59,15 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
     }
 
     const updateWithdrawInfo = (type: string, amount: string) => {
+        const coin = withdrawCoins.find(coin => coin.coinType === type)!;
+        const info = coins.find(info => info.coinType === type)!;
+        const withdrawAmount = coin.withdrawAmount ? (Math.floor(coin.withdrawAmount * Number(amount) * info.decimals / coin.supplied) / info.decimals).toString() : amount;
         setWithdrawInfos([
             ...withdrawInfos.filter(info => info.coinType !== type),
             {
                 coinType: type,
-                amount
+                amount,
+                withdrawAmount
             }
         ]);
     }
@@ -81,13 +86,26 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
             setIsValid(false);
             return;
         }
-        const isValid = dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
-            type: "withdrawFromNavi",
-            coinTypes: validList.map(item => item.coinType),
-            names: matchedCoinIndex.map(idx => coins[idx].name),
-            decimals: matchedCoinIndex.map(idx => coins[idx].decimals),
-            values: validList.map((item, idx) => Number(item.amount) * coins[matchedCoinIndex[idx]].decimals)
-        } as withdrawFromNaviType])));
+        let isValid: boolean;
+        if (title.match("NAVI")) {
+            isValid = dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
+                type: "withdrawFromNavi",
+                coinTypes: validList.map(item => item.coinType),
+                names: matchedCoinIndex.map(idx => coins[idx].name),
+                decimals: matchedCoinIndex.map(idx => coins[idx].decimals),
+                values: validList.map((item, idx) => Number(item.amount) * coins[matchedCoinIndex[idx]].decimals)
+            } as withdrawFromNaviType])));
+        } else {
+            isValid = dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
+                type: "withdrawFromScallop",
+                coinTypes: validList.map(item => item.coinType),
+                names: matchedCoinIndex.map(idx => coins[idx].name),
+                decimals: matchedCoinIndex.map(idx => coins[idx].decimals),
+                values: validList.map((item, idx) => Number(item.amount) * coins[matchedCoinIndex[idx]].decimals),
+                marketTypes: validList.map(item => `0xefe8b36d5b2e43728cc323298626b83177803521d195cfb11e15b910e892fddf::reserve::MarketCoin<${item.coinType}>`),
+                withdrawValues: validList.map((item, idx) => Number(item.withdrawAmount) * coins[matchedCoinIndex[idx]].decimals)
+            } as withdrawFromScallopType])));
+        }
         if (!isValid) {
             setIsValid(false);
             return;

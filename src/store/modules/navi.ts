@@ -18,7 +18,8 @@ export type withdrawCoinType = {
     alt: string,
     fallback: string,
     supplied: number,
-    sType?: string
+    marketType?: string,
+    withdrawAmount?: number
 }
 
 export type rewardCoinType = {

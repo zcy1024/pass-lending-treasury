@@ -3,7 +3,7 @@ import { supplyToScallopType } from "@/store/modules/tx";
 import { getCoin } from "@/lib/ptb/index";
 import { networkConfig } from "@/configs/networkConfig";
 
-export default async function assembleSupplyToScallop(tx: Transaction, sender: string, transaction: supplyToScallopType) {
+export default function assembleSupplyToScallop(tx: Transaction, sender: string, transaction: supplyToScallopType) {
     const sCoins: TransactionResult[] = [];
     for (const i in transaction.coinTypes) {
         const type = transaction.coinTypes[i];

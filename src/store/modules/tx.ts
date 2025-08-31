@@ -53,30 +53,44 @@ export type supplyToScallopType = {
     values: number[]
 }
 
-export type transactionType = (transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType)[];
+export type withdrawFromScallopType = {
+    type: string,
+    coinTypes: string[],
+    names: string[],
+    decimals: number[],
+    values: number[],
+    marketTypes: string[],
+    withdrawValues: number[]
+}
 
-function isTransferType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType): type is transferType {
+export type transactionType = (transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType)[];
+
+function isTransferType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType): type is transferType {
     return type.type === "transfer";
 }
 
-function isSupplyToNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType): type is supplyToNaviType {
+function isSupplyToNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType): type is supplyToNaviType {
     return type.type === "supplyToNavi";
 }
 
-function isWithdrawFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType): type is withdrawFromNaviType {
+function isWithdrawFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType): type is withdrawFromNaviType {
     return type.type === "withdrawFromNavi";
 }
 
-function isClaimFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType): type is claimFromNaviType {
+function isClaimFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType): type is claimFromNaviType {
     return type.type === "claimFromNavi";
 }
 
-function isClaimFromNaviAndResupplyType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType): type is claimFromNaviAndResupplyType {
+function isClaimFromNaviAndResupplyType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType): type is claimFromNaviAndResupplyType {
     return type.type === "claimFromNaviAndResupply";
 }
 
-function isSupplyToScallopType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType): type is supplyToScallopType {
+function isSupplyToScallopType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType): type is supplyToScallopType {
     return type.type === "supplyToScallop";
+}
+
+function isWithdrawFromScallopType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType): type is withdrawFromScallopType {
+    return type.type === "withdrawFromScallop";
 }
 
 export const typeToInfo = new Map<string, {
@@ -110,6 +124,11 @@ typeToInfo.set("claimFromNaviAndResupply", {
     fallback: "Navi"
 });
 typeToInfo.set("supplyToScallop", {
+    src: "/scallop.png",
+    alt: "scallop logo",
+    fallback: "Scallop"
+});
+typeToInfo.set("withdrawFromScallop", {
     src: "/scallop.png",
     alt: "scallop logo",
     fallback: "Scallop"
@@ -150,9 +169,9 @@ const updateNewCoins = (coins: coinType[], transactions: transactionType): [bool
                     };
                 });
             }
-            if (isWithdrawFromNaviType(transaction)) {
+            if (isWithdrawFromNaviType(transaction) || isWithdrawFromScallopType(transaction)) {
                 transaction.coinTypes.forEach((type, index) => {
-                    const value = transaction.values[index];
+                    const value = !isWithdrawFromScallopType(transaction) ? transaction.values[index] : transaction.withdrawValues[index];
                     const coinIndex = coins.findIndex(coin => coin.coinType === type);
                     if (coinIndex === -1) {
                         if (value !== 0)
@@ -232,6 +251,7 @@ export {
     isClaimFromNaviType,
     isClaimFromNaviAndResupplyType,
     isSupplyToScallopType,
+    isWithdrawFromScallopType,
 };
 
 export default txStore.reducer;

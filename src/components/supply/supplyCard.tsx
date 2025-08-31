@@ -8,7 +8,7 @@ import { AppDispatch, useAppSelector } from "@/store";
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { supplyToNaviType, updateTransactionsInfo } from "@/store/modules/tx";
+import { supplyToNaviType, supplyToScallopType, updateTransactionsInfo } from "@/store/modules/tx";
 
 export default function SupplyCard({title, supplyCoins}: {
     title: string,
@@ -59,7 +59,7 @@ export default function SupplyCard({title, supplyCoins}: {
             names: matchedCoinIndex.map(idx => coins[idx].name),
             decimals: matchedCoinIndex.map(idx => coins[idx].decimals),
             values: validList.map((item, idx) => Number(item.amount) * coins[matchedCoinIndex[idx]].decimals)
-        } as supplyToNaviType])));
+        } as (supplyToNaviType | supplyToScallopType)])));
         if (!isValid) {
             setIsValid(false);
             return;

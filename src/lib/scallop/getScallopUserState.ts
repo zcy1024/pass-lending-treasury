@@ -23,8 +23,9 @@ export default async function getScallopUserState(address: string, coinNameAndUr
             src: nameToUrl ? nameToUrl.src : await getUrlInMetadata(info.coinType),
             alt: info.symbol,
             fallback: info.symbol,
-            supplied: info.availableWithdrawAmount,
-            sType: info.sCoinType
+            supplied: info.unstakedMarketAmount,
+            marketType: info.marketCoinType,
+            withdrawAmount: info.availableWithdrawAmount
         } as withdrawCoinType);
     }
     return ret;
