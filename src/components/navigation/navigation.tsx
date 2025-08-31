@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@/store";
 import { setNavTab } from "@/store/modules/info";
 import { PassKey } from "@/components";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 export default function Navigation() {
     const navTab = useAppSelector(state => state.info.navTab);
@@ -20,8 +21,19 @@ export default function Navigation() {
                 </Avatar>
                 <Tabs defaultValue="Supply" value={navTab} className="w-40" onValueChange={value => dispatch(setNavTab(value))}>
                     <TabsList className="h-16 w-full bg-[#222]">
-                        <TabsTrigger value="Supply" className="cursor-pointer text-[#afb3b5] data-[state=active]:bg-[#0f0f0f] data-[state=active]:text-white transition-all duration-500">Supply</TabsTrigger>
-                        <TabsTrigger value="Withdraw" className="cursor-pointer text-[#afb3b5] data-[state=active]:bg-[#0f0f0f] data-[state=active]:text-white transition-all duration-500">Withdraw</TabsTrigger>
+                        <HoverCard openDelay={100}>
+                            <HoverCardTrigger className="w-full h-full">
+                                <TabsTrigger value="Supply" className={"cursor-pointer text-[#afb3b5] transition-all duration-500 data-[state=active]:bg-[#0f0f0f] data-[state=active]:text-white " + (navTab === "Supply" || navTab === "Withdraw" || navTab === "Strategy" ? "bg-[#0f0f0f] text-white" : "")}>Lending</TabsTrigger>
+                            </HoverCardTrigger>
+                            <HoverCardContent className="bg-[#222] w-36">
+                                <div className="flex flex-col gap-3 items-center">
+                                    <TabsTrigger value="Supply" className="cursor-pointer text-[#afb3b5] data-[state=active]:bg-[#0f0f0f] data-[state=active]:text-white transition-all duration-500">Supply</TabsTrigger>
+                                    <TabsTrigger value="Withdraw" className="cursor-pointer text-[#afb3b5] data-[state=active]:bg-[#0f0f0f] data-[state=active]:text-white transition-all duration-500">Withdraw</TabsTrigger>
+                                    <TabsTrigger value="Strategy" className="cursor-pointer text-[#afb3b5] data-[state=active]:bg-[#0f0f0f] data-[state=active]:text-white transition-all duration-500">Strategy</TabsTrigger>
+                                </div>
+                            </HoverCardContent>
+                        </HoverCard>
+                        <TabsTrigger value="LeaderBoard" className="cursor-pointer text-[#afb3b5] data-[state=active]:bg-[#0f0f0f] data-[state=active]:text-white transition-all duration-500">LeaderBoard</TabsTrigger>
                     </TabsList>
                 </Tabs>
             </div>
