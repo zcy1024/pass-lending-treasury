@@ -8,8 +8,8 @@ import { getCoins } from "@/lib/coinInfo";
 import { getNaviLendingState, getNaviSupplyCoins } from "@/lib/navi";
 import { setNaviRewardCoins, setNaviSupplyCoins, setNaviWithdrawCoins } from "@/store/modules/navi";
 import getNaviLendingRewards from "@/lib/navi/getNaviLendingRewards";
-import { getScallopLendingState } from "@/lib/scallop";
-import { setScallopSupplyCoins } from "@/store/modules/scallop";
+import { getScallopLendingState, getScallopUserState } from "@/lib/scallop";
+import { setScallopSupplyCoins, setScallopWithdrawCoins } from "@/store/modules/scallop";
 
 export type coinType = {
     coinType: string,
@@ -112,6 +112,7 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
             dispatch(setNaviWithdrawCoins(await getNaviLendingState(address)));
             dispatch(setNaviRewardCoins(await getNaviLendingRewards(address)));
             dispatch(setScallopSupplyCoins(await getScallopLendingState(coinNameAndUrl)));
+            dispatch(setScallopWithdrawCoins(await getScallopUserState(address, coinNameAndUrl)));
             return;
         }
         dispatch(setAddress(""));
@@ -122,6 +123,7 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
         dispatch(setNaviWithdrawCoins([]));
         dispatch(setNaviRewardCoins([]));
         dispatch(setScallopSupplyCoins([]));
+        dispatch(setScallopWithdrawCoins([]));
     }
 }
 

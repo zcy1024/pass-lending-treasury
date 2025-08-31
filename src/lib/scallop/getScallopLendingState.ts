@@ -1,13 +1,6 @@
 import { Scallop } from "@scallop-io/sui-scallop-sdk";
-import { suiClient } from "@/configs/networkConfig";
 import { supplyCoinType } from "@/store/modules/navi";
-
-async function getUrlInMetadata(coinType: string) {
-    const res = await suiClient.getCoinMetadata({
-        coinType
-    });
-    return res && res.iconUrl ? res.iconUrl : "";
-}
+import { getUrlInMetadata } from "@/lib/utils";
 
 export default async function getScallopLendingState(coinNameAndUrl: {
     coinType: string,

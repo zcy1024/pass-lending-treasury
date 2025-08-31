@@ -166,19 +166,22 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                 </Button>
                 <span className="text-xs font-sans text-red-600">{isValid ? "" : "error withdraw"}</span>
             </div>
-            <div className="flex gap-3 justify-end items-center px-5 mt-2">
-                <RewardsDetail title={title} rewardCoins={rewardCoins} />
-                <Button className="w-36 h-8 cursor-pointer font-sans"
-                        disabled={rewardCoins.length === 0 || claimed}
-                        onClick={claimRewards}>
-                    Claim Reward
-                </Button>
-                <Button className="w-36 h-8 cursor-pointer font-sans"
-                        disabled={rewardCoins.length === 0 || claimed}
-                        onClick={claimRewardsAndResupply}>
-                    Claim And ReSupply
-                </Button>
-            </div>
+            {
+                title === "NAVI Protocol" &&
+                <div className="flex gap-3 justify-end items-center px-5 mt-2">
+                    <RewardsDetail title={title} rewardCoins={rewardCoins} />
+                    <Button className="w-36 h-8 cursor-pointer font-sans"
+                            disabled={rewardCoins.length === 0 || claimed}
+                            onClick={claimRewards}>
+                        Claim Reward
+                    </Button>
+                    <Button className="w-36 h-8 cursor-pointer font-sans"
+                            disabled={rewardCoins.length === 0 || claimed}
+                            onClick={claimRewardsAndResupply}>
+                        Claim And ReSupply
+                    </Button>
+                </div>
+            }
             <hr className="my-5" />
         </div>
     );
