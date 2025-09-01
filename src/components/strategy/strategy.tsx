@@ -97,8 +97,8 @@ export default function Strategy() {
 
     return (
         <div className="flex justify-around items-center w-full h-full font-mono">
-            <div className="flex flex-col gap-6 items-center w-1/2 min-w-[550px] rounded-4xl border border-[#0a0e0f] p-1]">
-                <h3 className="font-bold text-xl my-1">Strategy</h3>
+            <div className="flex flex-col gap-6 items-center w-1/2 min-w-[550px] rounded-4xl border border-[#0a0e0f] p-3">
+                <h3 className="font-bold text-3xl my-1">Strategy</h3>
                 <div className="flex flex-col gap-1 w-full px-6">
                     <div className="flex justify-between">
                         <Select value={coinType} onValueChange={type => setCoinType(type)}>
