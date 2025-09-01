@@ -8,7 +8,7 @@ import { OpenTxCheck, DetailDrawer, TxDetail } from "@/components/transactions";
 import { Supply, SupplyCard } from "@/components/supply";
 import { Withdraw, WithdrawCard, RewardsDetail, ScallopRewardsDetail } from "@/components/withdraw";
 import { Strategy } from "@/components/strategy";
-import { LeaderBoard } from "@/components/leaderBoard"
+import { LeaderBoard, InviteInfo } from "@/components/leaderBoard"
 
 export {
     Loading,
@@ -29,4 +29,5 @@ export {
     ScallopRewardsDetail,
     Strategy,
     LeaderBoard,
+    InviteInfo
 }
