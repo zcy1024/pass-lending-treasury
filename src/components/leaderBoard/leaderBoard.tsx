@@ -1,6 +1,6 @@
 'use client'
 
-import { InviteInfo } from "@/components";
+import { InviteInfo, Rankings } from "@/components";
 
 export default function LeaderBoard() {
     return (
@@ -9,6 +9,7 @@ export default function LeaderBoard() {
             <hr className="w-full" />
             <InviteInfo />
             <hr className="w-full" />
+            <Rankings />
         </div>
     );
 }
