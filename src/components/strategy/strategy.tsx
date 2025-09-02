@@ -146,7 +146,8 @@ export default function Strategy() {
                             <div className="flex justify-between" key={name}>
                                 <div className="flex gap-3">
                                     <span className="w-20">{name}</span>
-                                    <Slider className="w-60 cursor-pointer"
+                                    <span className="w-24 text-center">99999.99%</span>
+                                    <Slider className="w-36 cursor-pointer"
                                             value={[info.sliderValue]} min={0} max={100} step={0.01}
                                             onValueChange={nums => handleChangeSlider(name, nums)} />
                                 </div>
