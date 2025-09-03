@@ -106,7 +106,7 @@ export default function TransferCard() {
                                     <div className="flex justify-between">
                                         <Select value={item.coinType} onValueChange={type => setList(list.map((item, idx) => idx !== index ? item : {
                                             coinType: type,
-                                            value: item.value
+                                            value: ""
                                         }))}>
                                             <SelectTrigger className="cursor-pointer" size="sm">
                                                 <SelectValue placeholder="Select Coin" />

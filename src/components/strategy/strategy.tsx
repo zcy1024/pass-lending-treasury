@@ -59,14 +59,10 @@ export default function Strategy() {
         const amount = coin ? coin.value : 0;
         const decimals = coin ? coin.decimals : 1;
         setAmount((amount / div / decimals).toString());
+        updateSliderAmount((amount / div / decimals).toString(), infos);
     }
 
-    const handleChangeSlider = (lending: string, nums: number[]) => {
-        const newInfos = infos.map(info => info.lending !== lending ? info : {
-            lending: info.lending,
-            sliderValue: nums[0],
-            amount: ""
-        });
+    const updateSliderAmount = (amount: string, newInfos: infoType[]) => {
         const coin = coins.find(coin => coin.coinType === coinType);
         if (!coin) {
             setInfos(newInfos);
@@ -95,13 +91,26 @@ export default function Strategy() {
         }));
     }
 
+    const handleChangeSlider = (lending: string, nums: number[]) => {
+        const newInfos = infos.map(info => info.lending !== lending ? info : {
+            lending: info.lending,
+            sliderValue: nums[0],
+            amount: ""
+        });
+        updateSliderAmount(amount, newInfos);
+    }
+
     return (
         <div className="flex justify-around items-center w-full h-full font-mono">
             <div className="flex flex-col gap-6 items-center w-1/2 min-w-[550px] rounded-4xl border border-[#0a0e0f] p-3">
                 <h3 className="font-bold text-3xl my-1">Strategy</h3>
                 <div className="flex flex-col gap-1 w-full px-6">
                     <div className="flex justify-between">
-                        <Select value={coinType} onValueChange={type => setCoinType(type)}>
+                        <Select value={coinType} onValueChange={type => {
+                            setCoinType(type);
+                            setAmount("");
+                            updateSliderAmount("", infos);
+                        }}>
                             <SelectTrigger className="cursor-pointer" size="sm">
                                 <SelectValue placeholder="Select Coin" />
                             </SelectTrigger>
@@ -119,7 +128,10 @@ export default function Strategy() {
                         <Input className="w-56 h-full"
                                type="number" placeholder="coin value"
                                value={amount}
-                               onChange={e => setAmount(e.target.value)} />
+                               onChange={e => {
+                                   setAmount(e.target.value);
+                                   updateSliderAmount(e.target.value, infos);
+                               }} />
                     </div>
                     <div className="flex justify-between self-end w-56 px-1">
                         <Button variant="outline" className="w-12 h-6 cursor-pointer"
