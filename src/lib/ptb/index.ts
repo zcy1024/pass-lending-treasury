@@ -1,7 +1,7 @@
 import {
     isClaimFromNaviAndResupplyType,
     isClaimFromNaviType,
-    isSupplyToNaviType, isSupplyToScallopType,
+    isSupplyToNaviType, isSupplyToScallopType, isSupplyToSuiLendType,
     isTransferType,
     isWithdrawFromNaviType, isWithdrawFromScallopType,
     transactionType
@@ -15,6 +15,7 @@ import assembleClaimFromNavi from "@/lib/ptb/assembleClaimFromNavi";
 import assembleClaimFromNaviAndResupply from "@/lib/ptb/assembleClaimFromNaviAndResupply";
 import assembleSupplyToScallop from "@/lib/ptb/assembleSupplyToScallop";
 import assembleWithdrawFromScallop from "@/lib/ptb/assembleWithdrawFromScallop";
+import assembleSupplyToSuiLend from "@/lib/ptb/assembleSupplyToSuiLend";
 
 export type extraCoinType = {
     coin: TransactionResult,
@@ -95,6 +96,8 @@ export default async function assemblePTB(transactions: transactionType, sender:
             assembleSupplyToScallop(tx, sender, transaction);
         else if (isWithdrawFromScallopType(transaction))
             extraCoins.push(...(assembleWithdrawFromScallop(tx, transaction)));
+        else if (isSupplyToSuiLendType(transaction))
+            await assembleSupplyToSuiLend(tx, sender, transaction);
     }
     transferExtraCoins(tx, extraCoins, sender);
     const [success, gas] = await dryRun(tx, sender);
