@@ -1,6 +1,6 @@
 import { Transaction } from "@mysten/sui/transactions";
 import { withdrawFromSuiLendType } from "@/store/modules/tx";
-import { LENDING_MARKET_ID, LENDING_MARKET_TYPE, SuilendClient } from "@suilend/sdk";
+import { initializeSuilend, LENDING_MARKET_ID, LENDING_MARKET_TYPE, SuilendClient } from "@suilend/sdk";
 import { suiClient } from "@/configs/networkConfig";
 import { extraCoinType } from "@/lib/ptb/index";
 
@@ -10,6 +10,19 @@ export default async function assembleWithdrawFromSuiLend(tx: Transaction, sende
         LENDING_MARKET_TYPE,
         suiClient
     );
+    const {
+        // lendingMarket,
+        // coinMetadataMap,
+        //
+        // refreshedRawReserves,
+        reserveMap,
+        // reserveCoinTypes,
+        // reserveCoinMetadataMap,
+        //
+        // rewardCoinTypes,
+        // activeRewardCoinTypes,
+        // rewardCoinMetadataMap,
+    } = await initializeSuilend(suiClient, suiLendClient);
     const obligationOwnerCaps = await SuilendClient.getObligationOwnerCaps(
         sender,
         [LENDING_MARKET_TYPE],
@@ -26,6 +39,7 @@ export default async function assembleWithdrawFromSuiLend(tx: Transaction, sende
     const usedTypes: string[] = [];
     for (const i in transaction.coinTypes) {
         const type = transaction.coinTypes[i];
+        const rate = reserveMap[type  === "0x2::sui::SUI" ? "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI" : type].cTokenExchangeRate.toNumber();
         if (usedTypes.findIndex(usedType => usedType === type) !== -1)
             continue;
         usedTypes.push(type);
@@ -38,7 +52,7 @@ export default async function assembleWithdrawFromSuiLend(tx: Transaction, sende
                 obligationOwnerCap.id,
                 obligationOwnerCap.obligationId,
                 type,
-                amount.toString(),
+                (Math.floor(amount / rate)).toString(),
                 tx
             ),
             coinType: type,
