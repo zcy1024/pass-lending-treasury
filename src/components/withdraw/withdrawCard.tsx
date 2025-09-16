@@ -13,7 +13,7 @@ import {
     claimFromNaviAndResupplyType,
     claimFromNaviType,
     updateTransactionsInfo,
-    withdrawFromNaviType, withdrawFromScallopType
+    withdrawFromNaviType, withdrawFromScallopType, withdrawFromSuiLendType
 } from "@/store/modules/tx";
 
 export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
@@ -95,7 +95,7 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                 decimals: matchedCoinIndex.map(idx => coins[idx].decimals),
                 values: validList.map((item, idx) => Number(item.amount) * coins[matchedCoinIndex[idx]].decimals)
             } as withdrawFromNaviType])));
-        } else {
+        } else if (title.match("Scallop")) {
             isValid = dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
                 type: "withdrawFromScallop",
                 coinTypes: validList.map(item => item.coinType),
@@ -105,6 +105,14 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                 marketTypes: validList.map(item => `0xefe8b36d5b2e43728cc323298626b83177803521d195cfb11e15b910e892fddf::reserve::MarketCoin<${item.coinType}>`),
                 withdrawValues: validList.map((item, idx) => Number(item.withdrawAmount) * coins[matchedCoinIndex[idx]].decimals)
             } as withdrawFromScallopType])));
+        } else {
+            isValid = dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
+                type: "withdrawFromSuiLend",
+                coinTypes: validList.map(item => item.coinType),
+                names: matchedCoinIndex.map(idx => coins[idx].name),
+                decimals: matchedCoinIndex.map(idx => coins[idx].decimals),
+                values: validList.map((item, idx) => Number(item.amount) * coins[matchedCoinIndex[idx]].decimals)
+            } as withdrawFromSuiLendType])))
         }
         if (!isValid) {
             setIsValid(false);
