@@ -7,12 +7,13 @@ import { WithdrawCard } from "@/components";
 export default function Withdraw() {
     const naviWithdraw = useAppSelector(state => state.navi);
     const scallopWithdraw = useAppSelector(state => state.scallop);
+    const suiLendWithdraw = useAppSelector(state => state.suiLend);
 
     return (
         <ScrollArea className="w-full h-full p-1">
             <WithdrawCard title={naviWithdraw.title} withdrawCoins={naviWithdraw.withdrawCoins} rewardCoins={naviWithdraw.rewardCoins} />
             <WithdrawCard title={scallopWithdraw.title} withdrawCoins={scallopWithdraw.withdrawCoins} rewardCoins={[]} />
-            {/*<WithdrawCard title={naviWithdraw.title} withdrawCoins={naviWithdraw.withdrawCoins} rewardCoins={naviWithdraw.rewardCoins} />*/}
+            <WithdrawCard title={suiLendWithdraw.title} withdrawCoins={suiLendWithdraw.withdrawCoins} rewardCoins={[]} />
             {/*<WithdrawCard title={naviWithdraw.title} withdrawCoins={naviWithdraw.withdrawCoins} rewardCoins={naviWithdraw.rewardCoins} />*/}
             {/*<WithdrawCard title={naviWithdraw.title} withdrawCoins={naviWithdraw.withdrawCoins} rewardCoins={naviWithdraw.rewardCoins} />*/}
         </ScrollArea>

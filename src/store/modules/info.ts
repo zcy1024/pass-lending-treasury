@@ -10,8 +10,8 @@ import { setNaviRewardCoins, setNaviSupplyCoins, setNaviWithdrawCoins } from "@/
 import getNaviLendingRewards from "@/lib/navi/getNaviLendingRewards";
 import { getScallopLendingState, getScallopUserState } from "@/lib/scallop";
 import { setScallopSupplyCoins, setScallopWithdrawCoins } from "@/store/modules/scallop";
-import { getSuiLendSupplyCoins } from "@/lib/suilend";
-import { setSuiLendSupplyCoins } from "@/store/modules/suilend";
+import { getSuiLendLendingState, getSuiLendSupplyCoins } from "@/lib/suilend";
+import { setSuiLendSupplyCoins, setSuiLendWithdrawCoins } from "@/store/modules/suilend";
 
 export type coinType = {
     coinType: string,
@@ -116,6 +116,7 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
             dispatch(setScallopSupplyCoins(await getScallopLendingState(coinNameAndUrl)));
             dispatch(setScallopWithdrawCoins(await getScallopUserState(address, coinNameAndUrl)));
             dispatch(setSuiLendSupplyCoins(await getSuiLendSupplyCoins(coinNameAndUrl)));
+            dispatch(setSuiLendWithdrawCoins(await getSuiLendLendingState(address, coinNameAndUrl)));
             return;
         }
         dispatch(setAddress(""));
@@ -128,6 +129,7 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
         dispatch(setScallopSupplyCoins([]));
         dispatch(setScallopWithdrawCoins([]));
         dispatch(setSuiLendSupplyCoins([]));
+        dispatch(setSuiLendWithdrawCoins([]));
     }
 }
 
