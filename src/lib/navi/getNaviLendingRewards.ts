@@ -30,7 +30,8 @@ export default async function getNaviLendingRewards(address: string) {
                     decimals: 10 ** pool.token.decimals
                 });
             }
-            ret[idx !== -1 ? idx : ret.length - 1].reward += Number(amount);
+            const decimals = ret[idx !== -1 ? idx : ret.length - 1].decimals;
+            ret[idx !== -1 ? idx : ret.length - 1].reward += Number(amount) * (decimals / (10 ** 9));
         }
     }
     return ret;

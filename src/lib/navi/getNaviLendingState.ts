@@ -6,7 +6,8 @@ type stateType = {
         token: {
             coinType: string,
             logoUri: string,
-            symbol: string
+            symbol: string,
+            decimals: number
         },
     }
     supplyBalance: string
@@ -21,7 +22,7 @@ export default async function getNaviLendingState(address: string) {
             src: item.pool.token.logoUri,
             alt: item.pool.token.symbol,
             fallback: item.pool.token.symbol,
-            supplied: Number(item.supplyBalance)
+            supplied: Number(item.supplyBalance) * (10 ** (item.pool.token.decimals - 9))
         } as withdrawCoinType;
     })
 }
