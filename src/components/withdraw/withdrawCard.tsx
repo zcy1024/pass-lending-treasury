@@ -30,7 +30,7 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
     useEffect(() => {
         setSupplied(withdrawCoins.map(coin => {
             let value = 0;
-            const keyword = title === "NAVI Protocol" ? "Navi" : "Scallop";
+            const keyword = title === "NAVI Protocol" ? "Navi" : (title === "Scallop" ? "Scallop" : "SuiLend");
             const withdraw = transactions.filter(transaction => transaction.type === `withdrawFrom${keyword}`);
             withdraw.forEach(tx => tx.coinTypes.forEach((type, index) => {
                 if (type === coin.coinType)
