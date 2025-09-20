@@ -7,6 +7,7 @@ import txReducer from "@/store/modules/tx";
 import naviReducer from "@/store/modules/navi";
 import scallopReducer from "@/store/modules/scallop";
 import suiLendReducer from "@/store/modules/suilend";
+import bucketReducer from "@/store/modules/bucket";
 
 const store = configureStore({
     reducer: {
@@ -14,7 +15,8 @@ const store = configureStore({
         tx: txReducer,
         navi: naviReducer,
         scallop: scallopReducer,
-        suiLend: suiLendReducer
+        suiLend: suiLendReducer,
+        bucket: bucketReducer
     }
 });
 
