@@ -19,7 +19,8 @@ export type withdrawCoinType = {
     fallback: string,
     supplied: number,
     marketType?: string,
-    withdrawAmount?: number
+    withdrawAmount?: number,
+    bucketSavingPoolRate?: number
 }
 
 export type rewardCoinType = {

@@ -25,7 +25,8 @@ export default async function getBucketSavingPoolState(address: string, coinName
         src: url,
         alt: "sUSDB",
         fallback: "sUSDB",
-        supplied: Number(info.lpBalance)
+        supplied: Number(info.lpBalance),
+        bucketSavingPoolRate: Number(info.usdbBalance / info.lpBalance)
     } as withdrawCoinType];
     const rewardCoins = [{
         coinType: "0x2::sui::SUI",

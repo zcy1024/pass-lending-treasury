@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import {
     claimFromNaviAndResupplyType,
     claimFromNaviType,
-    updateTransactionsInfo,
+    updateTransactionsInfo, withdrawFromBucketType,
     withdrawFromNaviType, withdrawFromScallopType, withdrawFromSuiLendType
 } from "@/store/modules/tx";
 
@@ -30,10 +30,10 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
     useEffect(() => {
         setSupplied(withdrawCoins.map(coin => {
             let value = 0;
-            const keyword = title === "NAVI Protocol" ? "Navi" : (title === "Scallop" ? "Scallop" : "SuiLend");
+            const keyword = title === "NAVI Protocol" ? "Navi" : (title === "Scallop" ? "Scallop" : (title === "SuiLend" ? "SuiLend" : "Bucket"));
             const withdraw = transactions.filter(transaction => transaction.type === `withdrawFrom${keyword}`);
             withdraw.forEach(tx => tx.coinTypes.forEach((type, index) => {
-                if (type === coin.coinType)
+                if (type === coin.coinType || keyword === "Bucket")
                     value += tx.values[index];
             }));
             return coin.supplied - value;
@@ -49,7 +49,7 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
 
     const [claimed, setClaimed] = useState<boolean>(false);
     useEffect(() => {
-        const keyword = title === "NAVI Protocol" ? "Navi" : "Scallop";
+        const keyword = title === "NAVI Protocol" ? "Navi" : "Bucket";
         setClaimed(transactions.find(transaction => transaction.type === `claimFrom${keyword}` || transaction.type === `claimFrom${keyword}AndResupply`) !== undefined);
     }, [title, transactions]);
 
@@ -76,13 +76,13 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
         const input = getWithdrawAmount(type);
         const index = withdrawCoins.findIndex(coin => coin.coinType === type);
         const coinIndex = coins.findIndex(coin => coin.coinType === type);
-        return !input || index === -1 || Number(input) === 0 || Number(input) * coins[coinIndex].decimals > supplied[index];
+        return !input || index === -1 || Number(input) === 0 || Number(input) * (coinIndex !== -1 ? coins[coinIndex].decimals : 1000000) > supplied[index];
     }
 
     const addTransaction = () => {
         const validList = withdrawInfos.filter(item => !isInvalidWithdrawAmount(item.coinType));
         const matchedCoinIndex = validList.map(item => coins.findIndex(coin => coin.coinType === item.coinType));
-        if (validList.length === 0 || matchedCoinIndex.find(index => index === -1)) {
+        if (validList.length === 0 || (matchedCoinIndex.find(index => index === -1) && title !== "Bucket")) {
             setIsValid(false);
             return;
         }
@@ -105,14 +105,24 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                 marketTypes: validList.map(item => `0xefe8b36d5b2e43728cc323298626b83177803521d195cfb11e15b910e892fddf::reserve::MarketCoin<${item.coinType}>`),
                 withdrawValues: validList.map((item, idx) => Number(item.withdrawAmount) * coins[matchedCoinIndex[idx]].decimals)
             } as withdrawFromScallopType])));
-        } else {
+        } else if (title.match("SuiLend")) {
             isValid = dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
                 type: "withdrawFromSuiLend",
                 coinTypes: validList.map(item => item.coinType),
                 names: matchedCoinIndex.map(idx => coins[idx].name),
                 decimals: matchedCoinIndex.map(idx => coins[idx].decimals),
                 values: validList.map((item, idx) => Number(item.amount) * coins[matchedCoinIndex[idx]].decimals)
-            } as withdrawFromSuiLendType])))
+            } as withdrawFromSuiLendType])));
+        } else {
+            const coinType = validList[0].coinType;
+            const rate = withdrawCoins.find(coin => coin.coinType === coinType)!.bucketSavingPoolRate!;
+            isValid = dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
+                type: "withdrawFromBucket",
+                coinTypes: ["0xe14726c336e81b32328e92afc37345d159f5b550b09fa92bd43640cfdd0a0cfd::usdb::USDB"],
+                names: ["USDB"],
+                decimals: [1000000],
+                values: validList.map(item => Number(item.amount) * 1000000 * rate)
+            } as withdrawFromBucketType])));
         }
         if (!isValid) {
             setIsValid(false);
@@ -148,7 +158,7 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
             <hr />
             {withdrawCoins.map((coin, index) => {
                 const ownedCoinIndex = coins.findIndex(info => info.coinType === coin.coinType);
-                const decimals = ownedCoinIndex === -1 ? 1 : coins[ownedCoinIndex].decimals;
+                const decimals = ownedCoinIndex === -1 ? 1000000 : coins[ownedCoinIndex].decimals;
 
                 return (
                     <div key={index} className="flex justify-between items-center px-10 m-1">
@@ -197,7 +207,7 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                 <span className="text-xs font-sans text-red-600">{isValid ? "" : "error withdraw"}</span>
             </div>
             {
-                title === "NAVI Protocol" &&
+                (title === "NAVI Protocol" || title === "Bucket") &&
                 <div className="flex gap-3 justify-end items-center px-5 mt-2">
                     <RewardsDetail title={title} rewardCoins={rewardCoins} />
                     <Button className="w-36 h-8 cursor-pointer font-sans"
