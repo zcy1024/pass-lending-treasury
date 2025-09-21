@@ -1,18 +1,20 @@
 'use client'
 
 import { createSlice } from "@reduxjs/toolkit";
-import { supplyCoinType, withdrawCoinType } from "@/store/modules/navi";
+import { rewardCoinType, supplyCoinType, withdrawCoinType } from "@/store/modules/navi";
 
 type initialStateType = {
     title: string,
     coins: supplyCoinType[],
-    withdrawCoins: withdrawCoinType[]
+    withdrawCoins: withdrawCoinType[],
+    rewardCoins: rewardCoinType[]
 }
 
 const initialState: initialStateType = {
     title: "Bucket",
     coins: [],
-    withdrawCoins: []
+    withdrawCoins: [],
+    rewardCoins: []
 }
 
 const bucketStore = createSlice({
@@ -24,18 +26,23 @@ const bucketStore = createSlice({
         },
         setBucketWithdrawCoins(state, action: { payload: withdrawCoinType[] }) {
             state.withdrawCoins = action.payload;
+        },
+        setBucketRewardCoins(state, action: { payload: rewardCoinType[] }) {
+            state.rewardCoins = action.payload;
         }
     }
 });
 
 const {
     setBucketSupplyCoins,
-    setBucketWithdrawCoins
+    setBucketWithdrawCoins,
+    setBucketRewardCoins
 } = bucketStore.actions;
 
 export {
     setBucketSupplyCoins,
-    setBucketWithdrawCoins
+    setBucketWithdrawCoins,
+    setBucketRewardCoins
 }
 
 export default bucketStore.reducer;

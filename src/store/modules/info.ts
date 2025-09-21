@@ -12,8 +12,8 @@ import { getScallopLendingState, getScallopUserState } from "@/lib/scallop";
 import { setScallopSupplyCoins, setScallopWithdrawCoins } from "@/store/modules/scallop";
 import { getSuiLendLendingState, getSuiLendSupplyCoins } from "@/lib/suilend";
 import { setSuiLendSupplyCoins, setSuiLendWithdrawCoins } from "@/store/modules/suilend";
-import { getBucketSupplyCoins } from "@/lib/bucket";
-import { setBucketSupplyCoins } from "@/store/modules/bucket";
+import { getBucketSavingPoolState, getBucketSupplyCoins } from "@/lib/bucket";
+import { setBucketRewardCoins, setBucketSupplyCoins, setBucketWithdrawCoins } from "@/store/modules/bucket";
 
 export type coinType = {
     coinType: string,
@@ -120,6 +120,9 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
             dispatch(setSuiLendSupplyCoins(await getSuiLendSupplyCoins(coinNameAndUrl)));
             dispatch(setSuiLendWithdrawCoins(await getSuiLendLendingState(address, coinNameAndUrl)));
             dispatch(setBucketSupplyCoins(await getBucketSupplyCoins()));
+            const [savingPoolStates, savingPoolRewards] = await getBucketSavingPoolState(address, coinNameAndUrl);
+            dispatch(setBucketWithdrawCoins(savingPoolStates));
+            dispatch(setBucketRewardCoins(savingPoolRewards));
             return;
         }
         dispatch(setAddress(""));
@@ -134,6 +137,8 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
         dispatch(setSuiLendSupplyCoins([]));
         dispatch(setSuiLendWithdrawCoins([]));
         dispatch(setBucketSupplyCoins([]));
+        dispatch(setBucketWithdrawCoins([]));
+        dispatch(setBucketRewardCoins([]));
     }
 }
 
