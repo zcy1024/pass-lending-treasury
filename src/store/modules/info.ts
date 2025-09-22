@@ -117,12 +117,12 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
             dispatch(setNaviRewardCoins(await getNaviLendingRewards(address)));
             dispatch(setScallopSupplyCoins(await getScallopLendingState(coinNameAndUrl)));
             dispatch(setScallopWithdrawCoins(await getScallopUserState(address, coinNameAndUrl)));
-            dispatch(setSuiLendSupplyCoins(await getSuiLendSupplyCoins(coinNameAndUrl)));
-            dispatch(setSuiLendWithdrawCoins(await getSuiLendLendingState(address, coinNameAndUrl)));
             dispatch(setBucketSupplyCoins(await getBucketSupplyCoins()));
             const [savingPoolStates, savingPoolRewards] = await getBucketSavingPoolState(address, coinNameAndUrl);
             dispatch(setBucketWithdrawCoins(savingPoolStates));
             dispatch(setBucketRewardCoins(savingPoolRewards));
+            dispatch(setSuiLendSupplyCoins(await getSuiLendSupplyCoins(coinNameAndUrl)));
+            dispatch(setSuiLendWithdrawCoins(await getSuiLendLendingState(address, coinNameAndUrl)));
             return;
         }
         dispatch(setAddress(""));
