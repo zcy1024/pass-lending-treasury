@@ -34,7 +34,7 @@ export default async function getBucketSavingPoolState(address: string, coinName
         src: rewardUrl,
         alt: "SUI",
         fallback: "SUI",
-        reward: Number(info.rewards[rewardType]),
+        reward: Number(info.rewards[rewardType]) / (10 ** 9),
         decimals: 10 ** 9
     } as rewardCoinType];
     return [withdrawCoins, rewardCoins];

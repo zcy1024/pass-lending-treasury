@@ -10,6 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Check } from "lucide-react";
 import { useDispatch } from "react-redux";
 import {
+    claimFromBucketAndResupplyType,
+    claimFromBucketType,
     claimFromNaviAndResupplyType,
     claimFromNaviType,
     updateTransactionsInfo, withdrawFromBucketType,
@@ -133,23 +135,43 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
     }
 
     const claimRewards = () => {
-        dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
-            type: "claimFromNavi",
-            coinTypes: rewardCoins.map(item => item.coinType),
-            names: rewardCoins.map(item => item.name),
-            decimals: rewardCoins.map(item => item.decimals),
-            values: rewardCoins.map((item, index) => item.reward * rewardCoins[index].decimals)
-        } as claimFromNaviType])));
+        if (title.match("NAVI")) {
+            dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
+                type: "claimFromNavi",
+                coinTypes: rewardCoins.map(item => item.coinType),
+                names: rewardCoins.map(item => item.name),
+                decimals: rewardCoins.map(item => item.decimals),
+                values: rewardCoins.map((item, index) => item.reward * rewardCoins[index].decimals)
+            } as claimFromNaviType])));
+        } else {
+            dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
+                type: "claimFromBucket",
+                coinTypes: rewardCoins.map(item => item.coinType),
+                names: rewardCoins.map(item => item.name),
+                decimals: rewardCoins.map(item => item.decimals),
+                values: rewardCoins.map((item, index) => item.reward * rewardCoins[index].decimals)
+            } as claimFromBucketType])));
+        }
     }
 
     const claimRewardsAndResupply = () => {
-        dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
-            type: "claimFromNaviAndResupply",
-            coinTypes: [],
-            names: [],
-            decimals: [],
-            values: []
-        } as claimFromNaviAndResupplyType])));
+        if (title.match("NAVI")) {
+            dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
+                type: "claimFromNaviAndResupply",
+                coinTypes: [],
+                names: [],
+                decimals: [],
+                values: []
+            } as claimFromNaviAndResupplyType])));
+        } else {
+            dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
+                type: "claimFromBucketAndResupply",
+                coinTypes: [],
+                names: [],
+                decimals: [],
+                values: []
+            } as claimFromBucketAndResupplyType])));
+        }
     }
 
     return (
