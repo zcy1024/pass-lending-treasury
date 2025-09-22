@@ -92,7 +92,8 @@ export type withdrawFromBucketType = {
     coinTypes: string[],
     names: string[],
     decimals: number[],
-    values: number[]
+    values: number[],
+    rate: number
 }
 
 export type claimFromBucketType = {

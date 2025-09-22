@@ -123,7 +123,8 @@ export default function WithdrawCard({title, withdrawCoins, rewardCoins}: {
                 coinTypes: ["0xe14726c336e81b32328e92afc37345d159f5b550b09fa92bd43640cfdd0a0cfd::usdb::USDB"],
                 names: ["USDB"],
                 decimals: [1000000],
-                values: validList.map(item => Number(item.amount) * 1000000 * rate)
+                values: validList.map(item => Number(item.amount) * 1000000 * rate),
+                rate
             } as withdrawFromBucketType])));
         }
         if (!isValid) {

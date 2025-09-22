@@ -1,8 +1,10 @@
 import {
+    isClaimFromBucketAndResupplyType,
+    isClaimFromBucketType,
     isClaimFromNaviAndResupplyType,
     isClaimFromNaviType, isSupplyToBucketType,
     isSupplyToNaviType, isSupplyToScallopType, isSupplyToSuiLendType,
-    isTransferType,
+    isTransferType, isWithdrawFromBucketType,
     isWithdrawFromNaviType, isWithdrawFromScallopType, isWithdrawFromSuiLendType,
     transactionType
 } from "@/store/modules/tx";
@@ -18,6 +20,9 @@ import assembleWithdrawFromScallop from "@/lib/ptb/assembleWithdrawFromScallop";
 import assembleSupplyToSuiLend from "@/lib/ptb/assembleSupplyToSuiLend";
 import assembleWithdrawFromSuiLend from "@/lib/ptb/assembleWithdrawFromSuiLend";
 import assembleSupplyToBucket from "@/lib/ptb/assembleSupplyToBucket";
+import assembleWithdrawFromBucket from "@/lib/ptb/assembleWithdrawFromBucket";
+import assembleClaimFromBucket from "@/lib/ptb/assembleClaimFromBucket";
+import assembleClaimFromBucketAndResupply from "@/lib/ptb/assembleClaimFromBucketAndResupply";
 
 export type extraCoinType = {
     coin: TransactionResult,
@@ -104,6 +109,12 @@ export default async function assemblePTB(transactions: transactionType, sender:
             extraCoins.push(...(await assembleWithdrawFromSuiLend(tx, sender, transaction)));
         else if (isSupplyToBucketType(transaction))
             assembleSupplyToBucket(tx, sender, transaction);
+        else if (isWithdrawFromBucketType(transaction))
+            extraCoins.push(...(assembleWithdrawFromBucket(tx, transaction)));
+        else if (isClaimFromBucketType(transaction))
+            assembleClaimFromBucket(tx, sender);
+        else if (isClaimFromBucketAndResupplyType(transaction))
+            await assembleClaimFromBucketAndResupply(tx, sender);
     }
     transferExtraCoins(tx, extraCoins, sender);
     const [success, gas] = await dryRun(tx, sender);
