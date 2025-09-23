@@ -146,6 +146,13 @@ export default function Strategy() {
         updateSliderAmount(amount, newInfos);
     }
 
+    const isValid = () => {
+        const coin = coins.find(coin => coin.coinType === coinType);
+        if (!coin)
+            return false;
+        return amount && coin.value >= Number(amount) * coin.decimals;
+    }
+
     const handleSupply = () => {
         console.log(infos);
     }
@@ -225,7 +232,8 @@ export default function Strategy() {
                     })}
                 </div>
                 <Button className="self-end w-36 h-8 cursor-pointer font-sans mr-3 mb-3"
-                        onClick={handleSupply}>
+                        onClick={handleSupply}
+                        disabled={!isValid()}>
                     Supply
                 </Button>
             </div>
