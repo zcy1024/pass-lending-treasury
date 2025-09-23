@@ -67,6 +67,7 @@ export default function Strategy() {
     }
 
     const updateSliderAmount = (amount: string, newInfos: infoType[]) => {
+        newInfos = newInfos.filter(info => lendings.find(name => name === info.lending));
         const coin = coins.find(coin => coin.coinType === coinType);
         if (!coin) {
             setInfos(newInfos);
@@ -110,6 +111,7 @@ export default function Strategy() {
         if (checkCoinType(type, suiLendSupplyCoins))
             lendings.push("SuiLend");
         setLendings(lendings);
+        updateSliderAmount(amount, infos);
     }
 
     const getApr = (name: string, type: string) => {
@@ -130,6 +132,10 @@ export default function Strategy() {
             amount: ""
         });
         updateSliderAmount(amount, newInfos);
+    }
+
+    const handleSupply = () => {
+        console.log(infos);
     }
 
     return (
@@ -204,7 +210,10 @@ export default function Strategy() {
                         );
                     })}
                 </div>
-                <Button className="self-end w-36 h-8 cursor-pointer font-sans mr-3 mb-3">Supply</Button>
+                <Button className="self-end w-36 h-8 cursor-pointer font-sans mr-3 mb-3"
+                        onClick={handleSupply}>
+                    Supply
+                </Button>
             </div>
         </div>
     );
