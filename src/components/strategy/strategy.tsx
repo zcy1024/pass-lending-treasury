@@ -66,8 +66,21 @@ export default function Strategy() {
         updateSliderAmount((amount / div / decimals).toString(), infos);
     }
 
+    const initInfos = (infos: infoType[]) => {
+        return lendings.map(lending => {
+            const info = infos.find(info => info.lending === lending);
+            if (info)
+                return info;
+            return {
+                lending,
+                sliderValue: 33,
+                amount: ""
+            } as infoType;
+        });
+    }
+
     const updateSliderAmount = (amount: string, newInfos: infoType[]) => {
-        newInfos = newInfos.filter(info => lendings.find(name => name === info.lending));
+        newInfos = initInfos(newInfos);
         const coin = coins.find(coin => coin.coinType === coinType);
         if (!coin) {
             setInfos(newInfos);
@@ -111,7 +124,6 @@ export default function Strategy() {
         if (checkCoinType(type, suiLendSupplyCoins))
             lendings.push("SuiLend");
         setLendings(lendings);
-        updateSliderAmount(amount, infos);
     }
 
     const getApr = (name: string, type: string) => {
@@ -189,8 +201,10 @@ export default function Strategy() {
                 </div>
                 <div className="flex flex-col gap-3 w-full px-6">
                     {lendings.map(name => {
-                        const info = infos.find(info => info.lending === name)!;
+                        const info = infos.find(info => info.lending === name);
                         const coin = coins.find(coin => coin.coinType === coinType);
+                        if (!info || !coin)
+                            return;
                         const decimals = coin ? coin.decimals : 1000000;
                         const apr = getApr(name, coinType);
 
