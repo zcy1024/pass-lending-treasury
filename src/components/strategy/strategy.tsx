@@ -14,13 +14,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { supplyCoinType } from "@/store/modules/navi";
 
 type frameworkType = {
     value: string,
     label: string
 };
-
-const lendings = ["Navi", "Scallop", "SuiLend"];
 
 type infoType = {
     lending: string,
@@ -30,10 +29,15 @@ type infoType = {
 
 export default function Strategy() {
     const coins = useAppSelector(state => state.info.realCoins);
+    const naviSupplyCoins = useAppSelector(state => state.navi.coins);
+    const scallopSupplyCoins = useAppSelector(state => state.scallop.coins);
+    const bucketSupplyCoins = useAppSelector(state => state.bucket.coins);
+    const suiLendSupplyCoins = useAppSelector(state => state.suiLend.coins);
 
     const [coinType, setCoinType] = useState<string>("");
     const [amount, setAmount] = useState<string>("");
     const [frameworks, setFrameworks] = useState<frameworkType[]>([]);
+    const [lendings, setLendings] = useState<string[]>(["Navi", "Scallop", "Bucket", "SuiLend"]);
     const [infos, setInfos] = useState<infoType[]>(lendings.map(name => {
         return {
             lending: name,
@@ -57,7 +61,7 @@ export default function Strategy() {
     const clickToChangeAmount = (div: number) => {
         const coin = coins.find(coin => coin.coinType === coinType);
         const amount = coin ? coin.value : 0;
-        const decimals = coin ? coin.decimals : 1;
+        const decimals = coin ? coin.decimals : 1000000;
         setAmount((amount / div / decimals).toString());
         updateSliderAmount((amount / div / decimals).toString(), infos);
     }
@@ -91,6 +95,34 @@ export default function Strategy() {
         }));
     }
 
+    const checkCoinType = (type: string, coins: supplyCoinType[]) => {
+        return coins.find(coin => coin.coinType === type) !== undefined;
+    }
+
+    const updateLendings = (type: string) => {
+        const lendings: string[] = [];
+        if (checkCoinType(type, naviSupplyCoins))
+            lendings.push("Navi");
+        if (checkCoinType(type, scallopSupplyCoins))
+            lendings.push("Scallop");
+        if (checkCoinType(type, bucketSupplyCoins))
+            lendings.push("Bucket");
+        if (checkCoinType(type, suiLendSupplyCoins))
+            lendings.push("SuiLend");
+        setLendings(lendings);
+    }
+
+    const getApr = (name: string, type: string) => {
+        if (!name || !type)
+            return 99999.99;
+        const coins =
+            name === "Navi" ? naviSupplyCoins :
+                (name === "Scallop" ? scallopSupplyCoins :
+                    (name === "Bucket" ? bucketSupplyCoins : suiLendSupplyCoins));
+        const coin = coins.find(coin => coin.coinType === type);
+        return coin ? coin.apr : 99999.99;
+    }
+
     const handleChangeSlider = (lending: string, nums: number[]) => {
         const newInfos = infos.map(info => info.lending !== lending ? info : {
             lending: info.lending,
@@ -109,6 +141,7 @@ export default function Strategy() {
                         <Select value={coinType} onValueChange={type => {
                             setCoinType(type);
                             setAmount("");
+                            updateLendings(type);
                             updateSliderAmount("", infos);
                         }}>
                             <SelectTrigger className="cursor-pointer" size="sm">
@@ -152,13 +185,14 @@ export default function Strategy() {
                     {lendings.map(name => {
                         const info = infos.find(info => info.lending === name)!;
                         const coin = coins.find(coin => coin.coinType === coinType);
-                        const decimals = coin ? coin.decimals : 1;
+                        const decimals = coin ? coin.decimals : 1000000;
+                        const apr = getApr(name, coinType);
 
                         return (
                             <div className="flex justify-between" key={name}>
                                 <div className="flex gap-3">
                                     <span className="w-20">{name}</span>
-                                    <span className="w-24 text-center">99999.99%</span>
+                                    <span className="w-24 text-right">{apr}%</span>
                                     <Slider className="w-36 cursor-pointer"
                                             value={[info.sliderValue]} min={0} max={100} step={0.01}
                                             onValueChange={nums => handleChangeSlider(name, nums)} />
