@@ -112,58 +112,72 @@ export type claimFromBucketAndResupplyType = {
     values: number[]
 }
 
-export type transactionType = (transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType)[];
+export type supplyToMultiLendings = {
+    type: string,
+    coinTypes: string[],
+    names: string[],
+    decimals: number[],
+    values: number[],
+    lendings: string[],
+    lending_values: number[]
+}
 
-function isTransferType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType): type is transferType {
+export type transactionType = (transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings)[];
+
+function isTransferType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is transferType {
     return type.type === "transfer";
 }
 
-function isSupplyToNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType): type is supplyToNaviType {
+function isSupplyToNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is supplyToNaviType {
     return type.type === "supplyToNavi";
 }
 
-function isWithdrawFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType): type is withdrawFromNaviType {
+function isWithdrawFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is withdrawFromNaviType {
     return type.type === "withdrawFromNavi";
 }
 
-function isClaimFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType): type is claimFromNaviType {
+function isClaimFromNaviType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is claimFromNaviType {
     return type.type === "claimFromNavi";
 }
 
-function isClaimFromNaviAndResupplyType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType): type is claimFromNaviAndResupplyType {
+function isClaimFromNaviAndResupplyType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is claimFromNaviAndResupplyType {
     return type.type === "claimFromNaviAndResupply";
 }
 
-function isSupplyToScallopType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType): type is supplyToScallopType {
+function isSupplyToScallopType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is supplyToScallopType {
     return type.type === "supplyToScallop";
 }
 
-function isWithdrawFromScallopType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType): type is withdrawFromScallopType {
+function isWithdrawFromScallopType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is withdrawFromScallopType {
     return type.type === "withdrawFromScallop";
 }
 
-function isSupplyToSuiLendType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType): type is supplyToSuiLendType {
+function isSupplyToSuiLendType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is supplyToSuiLendType {
     return type.type === "supplyToSuiLend";
 }
 
-function isWithdrawFromSuiLendType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType): type is withdrawFromSuiLendType {
+function isWithdrawFromSuiLendType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is withdrawFromSuiLendType {
     return type.type === "withdrawFromSuiLend";
 }
 
-function isSupplyToBucketType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType): type is supplyToBucketType {
+function isSupplyToBucketType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is supplyToBucketType {
     return type.type === "supplyToBucket";
 }
 
-function isWithdrawFromBucketType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType): type is withdrawFromBucketType {
+function isWithdrawFromBucketType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is withdrawFromBucketType {
     return type.type === "withdrawFromBucket";
 }
 
-function isClaimFromBucketType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType): type is claimFromBucketType {
+function isClaimFromBucketType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is claimFromBucketType {
     return type.type === "claimFromBucket";
 }
 
-function isClaimFromBucketAndResupplyType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType): type is claimFromBucketAndResupplyType {
+function isClaimFromBucketAndResupplyType(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is claimFromBucketAndResupplyType {
     return type.type === "claimFromBucketAndResupplyType";
+}
+
+function isSupplyToMultiLendings(type: transferType | supplyToNaviType | withdrawFromNaviType | claimFromNaviType | claimFromNaviAndResupplyType | supplyToScallopType | withdrawFromScallopType | supplyToSuiLendType | withdrawFromSuiLendType | supplyToBucketType | withdrawFromBucketType | claimFromBucketType | claimFromBucketAndResupplyType | supplyToMultiLendings): type is supplyToMultiLendings {
+    return type.type === "supplyToMultiLendings";
 }
 
 export const typeToInfo = new Map<string, {
@@ -236,6 +250,11 @@ typeToInfo.set("claimFromBucketAndResupply", {
     alt: "USDB logo",
     fallback: "USDB"
 });
+typeToInfo.set("supplyToMultiLendings", {
+    src: "/pass-lending-treasury.png",
+    alt: "pass-lending-treasury logo",
+    fallback: "pass-lending-treasury"
+});
 
 type initialStateType = {
     transactions: transactionType
@@ -258,7 +277,7 @@ const txStore = createSlice({
 const updateNewCoins = (coins: coinType[], transactions: transactionType): [boolean, coinType[]] => {
     try {
         transactions.forEach(transaction => {
-            if (isTransferType(transaction) || isSupplyToNaviType(transaction) || isSupplyToScallopType(transaction) || isSupplyToSuiLendType(transaction) || isSupplyToBucketType(transaction)) {
+            if (isTransferType(transaction) || isSupplyToNaviType(transaction) || isSupplyToScallopType(transaction) || isSupplyToSuiLendType(transaction) || isSupplyToBucketType(transaction) || isSupplyToMultiLendings(transaction)) {
                 transaction.coinTypes.forEach((type, index) => {
                     const value = transaction.values[index];
                     const coinIndex = coins.findIndex(coin => coin.coinType === type);
@@ -360,7 +379,8 @@ export {
     isSupplyToBucketType,
     isWithdrawFromBucketType,
     isClaimFromBucketType,
-    isClaimFromBucketAndResupplyType
+    isClaimFromBucketAndResupplyType,
+    isSupplyToMultiLendings
 };
 
 export default txStore.reducer;

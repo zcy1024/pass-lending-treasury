@@ -1,6 +1,6 @@
 'use client'
 
-import { useAppSelector } from "@/store";
+import { AppDispatch, useAppSelector } from "@/store";
 import { useEffect, useState } from "react";
 import {
     Select,
@@ -15,6 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { supplyCoinType } from "@/store/modules/navi";
+import { useDispatch } from "react-redux";
+import { updateTransactionsInfo } from "@/store/modules/tx";
 
 type frameworkType = {
     value: string,
@@ -28,11 +30,14 @@ type infoType = {
 };
 
 export default function Strategy() {
+    const dispatch = useDispatch<AppDispatch>();
     const coins = useAppSelector(state => state.info.realCoins);
+    const regionCoins = useAppSelector(state => state.info.coins);
     const naviSupplyCoins = useAppSelector(state => state.navi.coins);
     const scallopSupplyCoins = useAppSelector(state => state.scallop.coins);
     const bucketSupplyCoins = useAppSelector(state => state.bucket.coins);
     const suiLendSupplyCoins = useAppSelector(state => state.suiLend.coins);
+    const transactions = useAppSelector(state => state.tx.transactions);
 
     const [coinType, setCoinType] = useState<string>("");
     const [amount, setAmount] = useState<string>("");
@@ -150,11 +155,32 @@ export default function Strategy() {
         const coin = coins.find(coin => coin.coinType === coinType);
         if (!coin)
             return false;
-        return amount && coin.value >= Number(amount) * coin.decimals;
+        return amount && Number(amount) !== 0 && coin.value >= Number(amount) * coin.decimals;
     }
 
+    const [err, setErr] = useState<string>("");
     const handleSupply = () => {
-        console.log(infos);
+        const coin = coins.find(coin => coin.coinType === coinType);
+        if (!coin) {
+            setErr("error to supply");
+            return;
+        }
+        const isValid = dispatch(updateTransactionsInfo(regionCoins, transactions.concat([{
+            type: "supplyToMultiLendings",
+            coinTypes: [coinType],
+            names: [coin.name],
+            decimals: [coin.decimals],
+            values: [Number(amount) * coin.decimals],
+            lendings: infos.map(info => info.lending),
+            lending_values: infos.map(info => Number(info.amount))
+        }])));
+        if (!isValid) {
+            setErr("error to supply");
+            return;
+        }
+        setErr("");
+        setAmount("");
+        updateSliderAmount("", infos);
     }
 
     return (
@@ -231,11 +257,14 @@ export default function Strategy() {
                         );
                     })}
                 </div>
-                <Button className="self-end w-36 h-8 cursor-pointer font-sans mr-3 mb-3"
-                        onClick={handleSupply}
-                        disabled={!isValid()}>
-                    Supply
-                </Button>
+                <div className="flex gap-3 items-center self-end font-sans mr-3 mb-3">
+                    <span className="text-xs text-red-600">{err}</span>
+                    <Button className="w-36 h-8 cursor-pointer"
+                            onClick={handleSupply}
+                            disabled={!isValid()}>
+                        Supply
+                    </Button>
+                </div>
             </div>
         </div>
     );
