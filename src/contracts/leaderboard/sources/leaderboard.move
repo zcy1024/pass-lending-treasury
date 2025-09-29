@@ -56,7 +56,9 @@ fun add_cur_code(infos: &mut InfoList, i: u64) {
 
 public fun create_user(_: &AdminCap, infos: &mut InfoList, user: address) {
     assert!(!infos.list.contains(user), EAlreadyExists);
-    let code = infos.cur_code.to_string();
+    let mut temp = infos.cur_code;
+    temp.reverse();
+    let code = temp.to_string();
     infos.list.add(user, UserInfo {
         inviter: @0x0,
         code,
@@ -80,4 +82,28 @@ public fun add_points(_: &AdminCap, infos: &mut InfoList, user: address, points:
     let inviter = infos.list[user].inviter;
     if (inviter == @0x0) return;
     infos.list[inviter].reward = infos.list[inviter].reward + points / 10;
+}
+
+public fun get_cur_code(infos: &InfoList): vector<u8> {
+    infos.cur_code
+}
+
+public fun get_points(infos: &InfoList, user: address): (u64, u64) {
+    let info = &infos.list[user];
+    (info.reward, info.points)
+}
+
+#[test_only]
+public fun init_for_test(ctx: &mut TxContext) {
+    init(ctx);
+}
+
+#[test_only]
+public fun modify_cur_code(infos: &mut InfoList, code: vector<u8>) {
+    infos.cur_code = code;
+}
+
+#[test_only]
+public fun add_cur_code_for_test(infos: &mut InfoList) {
+    add_cur_code(infos, 0);
 }
