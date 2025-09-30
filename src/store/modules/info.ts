@@ -14,6 +14,8 @@ import { getSuiLendLendingState, getSuiLendSupplyCoins } from "@/lib/suilend";
 import { setSuiLendSupplyCoins, setSuiLendWithdrawCoins } from "@/store/modules/suilend";
 import { getBucketSavingPoolState, getBucketSupplyCoins } from "@/lib/bucket";
 import { setBucketRewardCoins, setBucketSupplyCoins, setBucketWithdrawCoins } from "@/store/modules/bucket";
+import { getUserInfo } from "@/lib/leaderboard";
+import { setUserInfo, UserInfoType } from "@/store/modules/leaderboard";
 
 export type coinType = {
     coinType: string,
@@ -123,6 +125,7 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
             dispatch(setBucketRewardCoins(savingPoolRewards));
             dispatch(setSuiLendSupplyCoins(await getSuiLendSupplyCoins(coinNameAndUrl)));
             dispatch(setSuiLendWithdrawCoins(await getSuiLendLendingState(address, coinNameAndUrl)));
+            dispatch(setUserInfo(await getUserInfo(address)));
             return;
         }
         dispatch(setAddress(""));
@@ -139,6 +142,13 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
         dispatch(setBucketSupplyCoins([]));
         dispatch(setBucketWithdrawCoins([]));
         dispatch(setBucketRewardCoins([]));
+        dispatch(setUserInfo({
+            hadInviter: false,
+            code: "",
+            invited: 0,
+            reward: 0,
+            points: 0
+        } as UserInfoType));
     }
 }
 

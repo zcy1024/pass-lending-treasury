@@ -8,6 +8,7 @@ import naviReducer from "@/store/modules/navi";
 import scallopReducer from "@/store/modules/scallop";
 import suiLendReducer from "@/store/modules/suilend";
 import bucketReducer from "@/store/modules/bucket";
+import leaderboardReducer from "@/store/modules/leaderboard";
 
 const store = configureStore({
     reducer: {
@@ -16,7 +17,8 @@ const store = configureStore({
         navi: naviReducer,
         scallop: scallopReducer,
         suiLend: suiLendReducer,
-        bucket: bucketReducer
+        bucket: bucketReducer,
+        leaderboard: leaderboardReducer
     }
 });
 
