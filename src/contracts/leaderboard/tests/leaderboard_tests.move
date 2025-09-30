@@ -68,3 +68,33 @@ fun special_code() {
     };
     ts.end();
 }
+
+#[test]
+fun complete_process() {
+    let mut ts = test_scenario::begin(ADMIN);
+    leaderboard::init_for_test(ts.ctx());
+    ts.next_tx(ADMIN);
+    {
+        let cap = ts.take_from_sender<leaderboard::AdminCap>();
+        let mut infos = ts.take_shared<leaderboard::InfoList>();
+        // create user
+        cap.create_user(&mut infos, ADMIN);
+        cap.create_user(&mut infos, USER);
+        // ADMIN invite USER
+        cap.set_inviter(&mut infos, USER, b"000000".to_string());
+        // add points
+        cap.add_points(&mut infos, ADMIN, 100);
+        cap.add_points(&mut infos, USER, 100);
+        // check points
+        let (admin_reward, admin_points) = infos.get_points(ADMIN);
+        let (user_reward, user_points) = infos.get_points(USER);
+        assert_eq!(admin_reward, 10);
+        assert_eq!(admin_points, 100);
+        assert_eq!(user_reward, 0);
+        assert_eq!(user_points, 100);
+        // return objects
+        ts.return_to_sender(cap);
+        test_scenario::return_shared(infos);
+    };
+    ts.end();
+}
