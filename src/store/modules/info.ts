@@ -15,7 +15,7 @@ import { setSuiLendSupplyCoins, setSuiLendWithdrawCoins } from "@/store/modules/
 import { getBucketSavingPoolState, getBucketSupplyCoins } from "@/lib/bucket";
 import { setBucketRewardCoins, setBucketSupplyCoins, setBucketWithdrawCoins } from "@/store/modules/bucket";
 import { getUserInfo } from "@/lib/leaderboard";
-import { setUserInfo, UserInfoType } from "@/store/modules/leaderboard";
+import { setInfoList, setUserInfo, UserInfoType } from "@/store/modules/leaderboard";
 
 export type coinType = {
     coinType: string,
@@ -125,7 +125,9 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
             dispatch(setBucketRewardCoins(savingPoolRewards));
             dispatch(setSuiLendSupplyCoins(await getSuiLendSupplyCoins(coinNameAndUrl)));
             dispatch(setSuiLendWithdrawCoins(await getSuiLendLendingState(address, coinNameAndUrl)));
-            dispatch(setUserInfo(await getUserInfo(address)));
+            const [userInfo, infoList] = await getUserInfo(address);
+            dispatch(setUserInfo(userInfo));
+            dispatch(setInfoList(infoList));
             return;
         }
         dispatch(setAddress(""));
@@ -143,12 +145,14 @@ const refreshAll = (publicKeyBytes: Uint8Array | undefined) => {
         dispatch(setBucketWithdrawCoins([]));
         dispatch(setBucketRewardCoins([]));
         dispatch(setUserInfo({
+            address: "",
             hadInviter: false,
             code: "",
             invited: 0,
             reward: 0,
             points: 0
         } as UserInfoType));
+        dispatch(setInfoList([]));
     }
 }
 

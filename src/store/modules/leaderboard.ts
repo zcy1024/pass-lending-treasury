@@ -3,6 +3,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export type UserInfoType = {
+    address: string,
     hadInviter: boolean,
     code: string,
     invited: number,
@@ -10,12 +11,21 @@ export type UserInfoType = {
     points: number
 }
 
-const initialState: UserInfoType = {
-    hadInviter: false,
-    code: "",
-    invited: 0,
-    reward: 0,
-    points: 0
+type initialStateType = {
+    info: UserInfoType,
+    infos: UserInfoType[]
+}
+
+const initialState: initialStateType = {
+    info: {
+        address: "",
+        hadInviter: false,
+        code: "",
+        invited: 0,
+        reward: 0,
+        points: 0
+    },
+    infos: []
 }
 
 const leaderboardStore = createSlice({
@@ -23,13 +33,16 @@ const leaderboardStore = createSlice({
     initialState,
     reducers: {
         setUserInfo(state, action: { payload: UserInfoType }) {
-            state = action.payload;
+            state.info = action.payload;
+        },
+        setInfoList(state, action: { payload: UserInfoType[] }) {
+            state.infos = action.payload;
         }
     }
 });
 
-const { setUserInfo } = leaderboardStore.actions;
+const { setUserInfo, setInfoList } = leaderboardStore.actions;
 
-export { setUserInfo };
+export { setUserInfo, setInfoList };
 
 export default leaderboardStore.reducer;

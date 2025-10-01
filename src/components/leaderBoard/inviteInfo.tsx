@@ -8,7 +8,7 @@ import { useAppSelector } from "@/store";
 
 export default function InviteInfo() {
     const [code, setCode] = useState<string>("");
-    const info = useAppSelector(state => state.leaderboard);
+    const info = useAppSelector(state => state.leaderboard.info);
 
     return (
         <div className="flex flex-col gap-2 w-full px-10">
