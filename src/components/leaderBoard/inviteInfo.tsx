@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { initProgress, refreshAll, setProgressValue } from "@/store/modules/info";
 import { randomTwentyFive } from "@/lib/utils";
 import { network, networkConfig } from "@/configs/networkConfig";
+import { getPasskeyKeypair } from "@/configs/passkey";
 
 export default function InviteInfo() {
     const [code, setCode] = useState<string>("");
@@ -22,6 +23,11 @@ export default function InviteInfo() {
     const info = useAppSelector(state => state.leaderboard.info);
     const address = useAppSelector(state => state.info.address);
     const publicKeyArray = useAppSelector(state => state.info.publicKeyArray);
+
+    const signMessage = async () => {
+        const keypair = getPasskeyKeypair(window.location.hostname, new Uint8Array(publicKeyArray));
+        await keypair.signPersonalMessage(new TextEncoder().encode("Sign to set inviter."));
+    }
 
     const handleConfirmCode = async () => {
         dispatch(setProgressValue(0));
@@ -36,6 +42,7 @@ export default function InviteInfo() {
                 dispatch(setProgressValue(100));
                 return;
             }
+            await signMessage();
             await assembleLeaderboardPTB(["invite"], address, code, 0, networkConfig[network].variables.Leaderboard);
             dispatch(refreshAll(new Uint8Array(publicKeyArray)));
             dispatch(initProgress());
