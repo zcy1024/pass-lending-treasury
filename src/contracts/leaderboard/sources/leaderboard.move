@@ -7,6 +7,7 @@ use sui::table::{Self, Table};
 const EAlreadyExists: u64 = 0;
 const EOutOfBound: u64 = 1;
 const EAlreadyHasInviter: u64 = 2;
+const ECanNotInviteSelf: u64 = 3;
 
 public struct AdminCap has key {
     id: UID
@@ -72,6 +73,7 @@ public fun create_user(_: &AdminCap, infos: &mut InfoList, user: address) {
 
 public fun set_inviter(_: &AdminCap, infos: &mut InfoList, user: address, code: String) {
     assert!(&infos.list[user].inviter == @0x0, EAlreadyHasInviter);
+    assert!(&infos.list[user].code != code, ECanNotInviteSelf);
     let inviter = infos.code_to_user[code];
     infos.list[user].inviter = inviter;
     infos.list[inviter].invited = infos.list[inviter].invited + 1;

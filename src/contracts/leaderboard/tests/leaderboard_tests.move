@@ -51,6 +51,20 @@ fun repeat_set_inviter() {
     }
 }
 
+#[test, expected_failure(abort_code = leaderboard::ECanNotInviteSelf)]
+fun invite_self() {
+    let mut ts = test_scenario::begin(ADMIN);
+    leaderboard::init_for_test(ts.ctx());
+    ts.next_tx(ADMIN);
+    {
+        let cap = ts.take_from_sender<leaderboard::AdminCap>();
+        let mut infos = ts.take_shared<leaderboard::InfoList>();
+        cap.create_user(&mut infos, ADMIN);
+        cap.set_inviter(&mut infos, ADMIN, b"000000".to_string());
+        abort 1024
+    }
+}
+
 #[test]
 fun special_code() {
     let mut ts = test_scenario::begin(ADMIN);
