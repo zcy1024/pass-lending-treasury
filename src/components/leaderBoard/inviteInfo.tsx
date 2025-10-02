@@ -4,29 +4,46 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import { useState } from "react";
-import { useAppSelector } from "@/store";
+import { AppDispatch, useAppSelector } from "@/store";
 import { Transaction } from "@mysten/sui/transactions";
 import assembleSetInviter from "@/lib/ptb/leaderboard/assembleSetInviter";
 import devRunLeaderboardTransaction from "@/lib/ptb/leaderboard/devRunLeaderboardTransaction";
 import assembleCreateUser from "@/lib/ptb/leaderboard/assembleCreateUser";
 import assembleLeaderboardPTB from "@/lib/ptb/leaderboard";
+import { useDispatch } from "react-redux";
+import { initProgress, refreshAll, setProgressValue } from "@/store/modules/info";
+import { randomTwentyFive } from "@/lib/utils";
+import { network, networkConfig } from "@/configs/networkConfig";
 
 export default function InviteInfo() {
     const [code, setCode] = useState<string>("");
     const [isValid, setIsValid] = useState<boolean>(true);
+    const dispatch = useDispatch<AppDispatch>();
     const info = useAppSelector(state => state.leaderboard.info);
     const address = useAppSelector(state => state.info.address);
+    const publicKeyArray = useAppSelector(state => state.info.publicKeyArray);
 
     const handleConfirmCode = async () => {
-        const tx = new Transaction();
-        await assembleCreateUser(tx, address);
-        assembleSetInviter(tx, address, code);
-        const isValid = await devRunLeaderboardTransaction(tx, address);
-        setIsValid(isValid);
-        if (!isValid)
-            return;
-        // Todo: set inviter
-        // await assembleLeaderboardPTB(["invite"], address, code, 0);
+        dispatch(setProgressValue(0));
+        try {
+            const tx = new Transaction();
+            await assembleCreateUser(tx, address);
+            assembleSetInviter(tx, address, code);
+            const isValid = await devRunLeaderboardTransaction(tx, address);
+            dispatch(setProgressValue(randomTwentyFive()));
+            setIsValid(isValid);
+            if (!isValid) {
+                dispatch(setProgressValue(100));
+                return;
+            }
+            await assembleLeaderboardPTB(["invite"], address, code, 0, networkConfig[network].variables.Leaderboard);
+            dispatch(refreshAll(new Uint8Array(publicKeyArray)));
+            dispatch(initProgress());
+            setCode("");
+        } catch (e) {
+            console.error(e);
+            dispatch(setProgressValue(100));
+        }
     }
 
     return (

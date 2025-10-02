@@ -10,14 +10,18 @@ import assembleAddPoints from "@/lib/ptb/leaderboard/assembleAddPoints";
 const suiClient = new SuiClient({ url: getFullnodeUrl("testnet") });
 const keypair = Ed25519Keypair.fromSecretKey(process.env.PRIVATE_KEY!);
 
-export default async function assembleLeaderboardPTB(keys: string[], user: string, code: string, points: number) {
+export default async function assembleLeaderboardPTB(keys: string[], user: string, code: string, points: number, config: {
+    Package: string,
+    AdminCap: string,
+    InfoList: string
+}) {
     const tx = new Transaction();
-    await assembleCreateUser(tx, user);
+    await assembleCreateUser(tx, user, config);
     keys.forEach(key => {
         if (key === "invite")
-            assembleSetInviter(tx, user, code);
+            assembleSetInviter(tx, user, code, config);
         else
-            assembleAddPoints(tx, user, points);
+            assembleAddPoints(tx, user, points, config);
     });
     const res = await suiClient.signAndExecuteTransaction({
         transaction: tx,
