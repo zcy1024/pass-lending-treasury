@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import { useState } from "react";
 import { useAppSelector } from "@/store";
-import { checkValidCode } from "@/lib/leaderboard";
+import { Transaction } from "@mysten/sui/transactions";
+import assembleSetInviter from "@/lib/ptb/leaderboard/assembleSetInviter";
+import devRunLeaderboardTransaction from "@/lib/ptb/leaderboard/devRunLeaderboardTransaction";
+import assembleCreateUser from "@/lib/ptb/leaderboard/assembleCreateUser";
+import assembleLeaderboardPTB from "@/lib/ptb/leaderboard";
 
 export default function InviteInfo() {
     const [code, setCode] = useState<string>("");
@@ -14,11 +18,15 @@ export default function InviteInfo() {
     const address = useAppSelector(state => state.info.address);
 
     const handleConfirmCode = async () => {
-        const isValid = await checkValidCode(code, address);
+        const tx = new Transaction();
+        await assembleCreateUser(tx, address);
+        assembleSetInviter(tx, address, code);
+        const isValid = await devRunLeaderboardTransaction(tx, address);
         setIsValid(isValid);
         if (!isValid)
             return;
         // Todo: set inviter
+        // await assembleLeaderboardPTB(["invite"], address, code, 0);
     }
 
     return (

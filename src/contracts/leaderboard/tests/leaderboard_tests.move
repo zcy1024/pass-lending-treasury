@@ -98,33 +98,3 @@ fun complete_process() {
     };
     ts.end();
 }
-
-#[test]
-fun check_valid_code() {
-    let mut ts = test_scenario::begin(ADMIN);
-    leaderboard::init_for_test(ts.ctx());
-    ts.next_tx(ADMIN);
-    {
-        let cap = ts.take_from_sender<leaderboard::AdminCap>();
-        let mut infos = ts.take_shared<leaderboard::InfoList>();
-        cap.create_user(&mut infos, ADMIN);
-        infos.check_code(b"000000".to_string());
-        ts.return_to_sender(cap);
-        test_scenario::return_shared(infos);
-    };
-    ts.end();
-}
-
-#[test, expected_failure(abort_code = leaderboard::ENotValidCode)]
-fun check_not_valid_code() {
-    let mut ts = test_scenario::begin(ADMIN);
-    leaderboard::init_for_test(ts.ctx());
-    ts.next_tx(ADMIN);
-    {
-        let cap = ts.take_from_sender<leaderboard::AdminCap>();
-        let mut infos = ts.take_shared<leaderboard::InfoList>();
-        cap.create_user(&mut infos, ADMIN);
-        infos.check_code(b"000001".to_string());
-        abort 1024
-    }
-}
