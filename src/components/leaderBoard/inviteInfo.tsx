@@ -5,10 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import { useState } from "react";
 import { useAppSelector } from "@/store";
+import { checkValidCode } from "@/lib/leaderboard";
 
 export default function InviteInfo() {
     const [code, setCode] = useState<string>("");
+    const [isValid, setIsValid] = useState<boolean>(true);
     const info = useAppSelector(state => state.leaderboard.info);
+    const address = useAppSelector(state => state.info.address);
+
+    const handleConfirmCode = async () => {
+        const isValid = await checkValidCode(code, address);
+        setIsValid(isValid);
+        if (!isValid)
+            return;
+        // Todo: set inviter
+    }
 
     return (
         <div className="flex flex-col gap-2 w-full px-10">
@@ -18,9 +29,19 @@ export default function InviteInfo() {
                     <span>Inviter:</span>
                     <Input className="w-20 h-6 text-center"
                            type="text" maxLength={6} placeholder="Code"
-                           value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} />
-                    <Button className="cursor-pointer h-6 ml-6">Confirm</Button>
-                    <span className="font-sans text-xs text-[#afb3b5]">Once set, it cannot be changed.</span>
+                           value={code} onChange={(e) => {
+                               setCode(e.target.value.toUpperCase());
+                               setIsValid(true);
+                           }} />
+                    <Button className="cursor-pointer h-6 ml-6" disabled={!code || code.length !== 6 || !isValid || !address}
+                            onClick={handleConfirmCode}>
+                        Confirm
+                    </Button>
+                    {
+                        isValid &&
+                        <span className="font-sans text-xs text-[#afb3b5]">Once set, it cannot be changed.</span> ||
+                        <span className="font-sans text-xs text-red-500">Please enter a valid invitation code.</span>
+                    }
                 </div>
             }
             <div className="flex gap-2 items-center">

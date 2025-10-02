@@ -7,6 +7,7 @@ use sui::table::{Self, Table};
 const EAlreadyExists: u64 = 0;
 const EOutOfBound: u64 = 1;
 const EAlreadyHasInviter: u64 = 2;
+const ENotValidCode: u64 = 3;
 
 public struct AdminCap has key {
     id: UID
@@ -91,6 +92,10 @@ public fun get_cur_code(infos: &InfoList): vector<u8> {
 public fun get_points(infos: &InfoList, user: address): (u64, u64) {
     let info = &infos.list[user];
     (info.reward, info.points)
+}
+
+public fun check_code(infos: &InfoList, code: String) {
+    assert!(infos.code_to_user.contains(code), ENotValidCode);
 }
 
 #[test_only]
