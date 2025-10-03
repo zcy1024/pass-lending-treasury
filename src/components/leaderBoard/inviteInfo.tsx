@@ -15,6 +15,7 @@ import { initProgress, refreshAll, setProgressValue } from "@/store/modules/info
 import { randomTwentyFive } from "@/lib/utils";
 import { network, networkConfig } from "@/configs/networkConfig";
 import { getPasskeyKeypair } from "@/configs/passkey";
+import { verifyPersonalMessageSignature } from "@mysten/sui/verify";
 
 export default function InviteInfo() {
     const [code, setCode] = useState<string>("");
@@ -25,8 +26,12 @@ export default function InviteInfo() {
     const publicKeyArray = useAppSelector(state => state.info.publicKeyArray);
 
     const signMessage = async () => {
+        const message = new TextEncoder().encode("Sign to set inviter.");
         const keypair = getPasskeyKeypair(window.location.hostname, new Uint8Array(publicKeyArray));
-        await keypair.signPersonalMessage(new TextEncoder().encode("Sign to set inviter."));
+        const { signature } = await keypair.signPersonalMessage(message);
+        await verifyPersonalMessageSignature(message, signature, {
+            address: keypair.toSuiAddress()
+        });
     }
 
     const handleConfirmCode = async () => {
