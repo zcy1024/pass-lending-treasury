@@ -87,7 +87,7 @@ async function dryRun(tx: Transaction, sender: string): Promise<[boolean, number
     return [res.effects.status.status === "success", Number(res.effects.gasUsed.computationCost) + Number(res.effects.gasUsed.storageCost)];
 }
 
-export default async function assemblePTB(transactions: transactionType, sender: string): Promise<[Transaction, boolean]> {
+export default async function assemblePTB(transactions: transactionType, sender: string): Promise<[Transaction, boolean, number]> {
     const tx = new Transaction();
     for (const transaction of transactions) {
         if (isTransferType(transaction))
@@ -127,5 +127,5 @@ export default async function assemblePTB(transactions: transactionType, sender:
         balance: Math.floor(gas / 1000),
         useGasCoin: true
     })], tx.pure.address("0x4ee352f9b259edc642cd4dd028c0ce3491d97dd01a7bb570eb16d74711e08c09"));
-    return [tx, success];
+    return [tx, success, gas / 100000];
 }

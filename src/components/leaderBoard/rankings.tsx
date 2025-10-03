@@ -44,7 +44,7 @@ export default function Rankings() {
                                 <Copy size={16} className="cursor-pointer active:text-[#196ae3]"
                                       onClick={() => navigator.clipboard.writeText(info.address)} />
                             </div>
-                            <span className="w-36 text-right">{info.reward + info.points}</span>
+                            <span className="w-36 text-right">{(info.reward + info.points) / 100}</span>
                         </div>
                     );
                 })}

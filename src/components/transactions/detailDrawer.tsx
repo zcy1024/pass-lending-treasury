@@ -18,9 +18,10 @@ import { setTransactions, updateTransactionsInfo } from "@/store/modules/tx";
 import assemblePTB from "@/lib/ptb";
 import { initProgress, refreshAll, setProgressValue } from "@/store/modules/info";
 import { getPasskeyKeypair } from "@/configs/passkey";
-import { suiClient } from "@/configs/networkConfig";
+import { network, networkConfig, suiClient } from "@/configs/networkConfig";
 import { randomTwentyFive } from "@/lib/utils";
 import { toast } from "sonner";
+import assembleLeaderboardPTB from "@/lib/ptb/leaderboard";
 
 export default function DetailDrawer() {
     const [open, setOpen] = useState<boolean>(false);
@@ -33,7 +34,7 @@ export default function DetailDrawer() {
 
     const signAndExecuteTransaction = async () => {
         dispatch(setProgressValue(0));
-        const [tx, success] = await assemblePTB(transactions, account);
+        const [tx, success, points] = await assemblePTB(transactions, account);
         if (!success) {
             dispatch(setProgressValue(100));
             toast("Error transaction!");
@@ -49,6 +50,7 @@ export default function DetailDrawer() {
             await suiClient.waitForTransaction({
                 digest: res.digest
             });
+            await assembleLeaderboardPTB(["points"], account, "", points, networkConfig[network].variables.Leaderboard);
             dispatch(refreshAll(new Uint8Array(publicKeyArray)));
             dispatch(setTransactions([]));
             dispatch(initProgress());
