@@ -19,10 +19,10 @@ const {networkConfig, useNetworkVariable, useNetworkVariables} = createNetworkCo
                 Market: "0xa757975255146dc9686aa823b7838b507f315d704f428cbadad2f4ea061939d9"
             },
             Leaderboard: {
-                Package: "0xa68b129d5496f8605a29d1d57e9968ddd67ec8a8ed3daec672bc146ac4dd75b3",
-                UpgradeCap: "0x455f72e223309566d314fc2b46cab4329182bc8b787fcd73a2cc7c916e85e8ea",
-                AdminCap: "0xa5207acd6b5ce43dc12736202d8f6a70ea3f0adc09ca456dd0a15256bc2c93e6",
-                InfoList: "0x13471596227ffe723a15ba0de4471d11ed9e14aabc1d4c19887fc60d8554077d"
+                Package: "0x09cbc83f451252618290d0a808e8c5eede4c3747fed28f78e52afce4f285c973",
+                UpgradeCap: "0x3747f8d504e5db8ef7818f7b562af742e106aa0caa70097564ff4aca1daad788",
+                AdminCap: "0x1b49a19d977e03cd0517f3a74cf7307a3681649955bf3db84c1da46d8a9c8a98",
+                InfoList: "0x0cacec884810e2ee3597afc725992da7195dae5d468ebd7332bf061943fa989c"
             }
         }
     }
